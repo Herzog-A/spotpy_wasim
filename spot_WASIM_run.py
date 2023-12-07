@@ -41,12 +41,7 @@ def main():
     results = spotpy.analyser.load_csv_results(dbname)
     
     # plot the best modelrun
-    spotpy.analyser.plot_bestmodelrun(results, setup.full_observation)   
-    
-    # identifiy best x percent of the model runs (based on like1)
-    posterior=spotpy.analyser.get_posterior(results, percentage=20)
-    # plot parameter interaction
-    spotpy.analyser.plot_parameterInteraction(posterior)
+    spotpy.analyser.plot_bestmodelrun(results, setup.full_observation)       
 
 if __name__ == "__main__":
     
