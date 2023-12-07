@@ -1,0 +1,38 @@
+# file to be ignored by git
+
+# input files
+*fundus_25.*
+*.txt
+*.ezg2
+*.ftz
+
+
+# output files
+*.grd
+*.mit
+*.sum
+*.stat
+*.png
+*stack
+*wq_table*
+
+# tools
+tools
+
+# keep files
+!fundus-qh_all.txt
+!parameter_ranges.txt
+
+# all core files in case there are some
+**core**
+__pycache__
+
+# all model files
+*.dll
+*.log
+*.exe
+*.intern
+*Diag*
+
+
+!**/.keep

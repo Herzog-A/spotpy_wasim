@@ -1,0 +1,1294 @@
+# == protected part to be changed by the module adapter ==
+# == all manual changes in this section will be overwritten by the module adapter ==
+
+$set $runID = 001
+$set $startyear  = 2013
+$set $endyear    = 2014
+
+$set $DefaultOutputDirectory 	= .\output\
+$set $inpath_grid    			= .\input\grids\GRD\
+$set $inpath_meteo   			= .\input\meteo\
+$set $inpath_hydro   			= .\input\hydro\
+$set $inpath_ini     			= .\state_ini\
+
+$set $time           = 1440
+
+$set $year           = 2013
+
+$set $startminute	= 00
+$set $starthour		= 00
+$set $startday 		= 01
+$set $startmonth 	= 01
+
+$set $endminute 	= 00
+$set $endhour 		= 00
+$set $endday 		= 01
+$set $endmonth 		= 01
+
+# it is important to set $outpath to an empty string in order to activate $DefaultOutputDirectory
+$set $outpath        =  .\output\
+
+# readgrids : 1 = read storage grids (as SI, SSNOW,SLIQ...) from hard disk, 0=generate and initialize with 0
+$set $readgrids     =  0
+
+# read grids for dynamic phenology -> usually chilling grid should be read in if availabe because otherwise thermal time method will be applied and not the sequential model
+$set $DPreadgrids   =  0
+
+# == end of protected part ==
+
+$set $time           = 1440 ### daily output
+
+# it is important to set $outpath to an empty string in order to activate $DefaultOutputDirectory
+$set $outpath        =  .\output\
+
+$set $grid           =  fundus_25
+$set $stack          =  stack
+$set $code           =  t
+$set $file			 =  stat
+$set $sep 			 = \
+
+#--------------------------------------
+# standard grid definitions
+#--------------------------------------
+# first section: grids, which differ for different subdivisions of the basin
+$set $zone_grid             =  $grid//.zones     # zonen statistic output
+$set $subcatchments         =  $grid//.zones	 # zonen soil_model, snow model
+$set $flow_time_grid        =  $grid//.fzs2 	 # flow travel time grid 
+$set $river_links_grid      =  $grid//.lnk2	 	 # river network grid
+$set $regio_grid            =  $grid//.ezg2 	 # zonen regional regression (not used)
+
+#second section: grids, which doesn't depend on subdivision (only pixel-values are of interest)
+$set $elevation_model       =  $grid//.dhk
+$set $RelCellArea_grid      =  $grid//.rca
+$set $CellSizeX_grid        =  $grid//.csx
+$set $CellSizeY_grid        =  $grid//.csy
+$set $slope_grid            =  $grid//.slp
+$set $FlowDirection_grid    =  $grid//.flk
+$set $aspect_grid           =  $grid//.exp
+$set $land_use_grid         =  $grid//.luse # use_c stands for resampling using central value instead of most frequent value, which would be use_f
+$set $ice_firn_grid         =  $grid//.ice
+$set $soil_types            =  $grid//.soil
+$set $sky_view_factor_grid  =  $grid//.hor
+$set $river_depth_grid      =  $grid//.dep
+$set $river_width_grid      =  $grid//.wit
+$set $TWIgrid               =  $grid//.twi
+
+$set $lake_grid             =  $grid//.lakes
+$set $taucrit_grid          =  $grid//.tau
+$set $ThawCoeffPermaFrost   =  $grid//.alpha
+$set $debris_on_glaciers    =  $grid//.debris
+$set $slidefraction1        =  $grid//.sd1
+$set $slidefraction2        =  $grid//.sd2
+$set $slidefraction3        =  $grid//.sd3
+$set $slidefraction4        =  $grid//.sd4
+$set $depositionindex       =  $grid//.svfdir_2
+$set $elevationordercols    =  $grid//.eoc
+$set $elevationorderrows    =  $grid//.eor
+
+#--------------------------------------
+# output file codes
+#--------------------------------------
+
+# grid codes
+$set $Writegrid      	=  3  # only last grid of the model run
+$set $Writestack     	=  3
+$set $grd_run_sum  		=  13
+$set $grd_run_mean    	=  53
+
+# statisic file codes
+$set $no_output		 =  1000
+$set $outputcode     =  5001
+$set $output_meteo   =  1001
+$set $month_sum      =  4030
+$set $month_mean	 =  2030
+$set $day_sum        =  4001
+$set $day_mean       =  2001
+$set $hour_mean      =  2001
+$set $routing_code   =  5001
+
+
+[SpinUp]
+0							# doSpinUp: 0=no, 1=yes
+0							# doTemperaturePreSpinUp: 0=no, 1=yes
+1							# repeatCnt: how many times should the model run for the defined time period (in [model_time]), e.g. 5 for 5 tiumes
+4							# numGrids : numbe rof following entries for grids to use for HRU creation. 0 means, that a (standard) grid with identifier HydrologicRespondUnits should be read in, otherwise the follwoing lines will be evaluated
+elevation_model	100 lin 	# 1st parameter: internal grid identifier | 2nd parameter: class width for reclassifying, e.g. 50 means that 0...50 in the input will be mapped to 1 in the outpout, (50-100) will be mapped to 2 in the output etc | 3rd parameter lin or lg2: how input is transformed first before reclassifying
+soil_types	1 lin 			# each landuse class is used for HRU creation
+landuse		1 lin 			# each soil type is used for HRU creation
+slope_angle	2 sqrt 			# sqrt means, that reclassifying is done with quadratic growing class widths, i.e. the input slopes in degree will be classified as 0-1, 1-2, 2-4, 4-8, 8-16, 16-32, 32-64, > 64
+slope_aspect	90 lin 		# each soil type is used for HRU creation
+#max_ponding_storage 1 lin 	# each lake will have at least one specific HRU
+
+[output_list]
+6     # number of subbasins which are scheduled for output (is only of interest, if the code for the statistic files are >5000)
+1
+2
+3
+4
+5
+6
+
+[output_interval]
+1	             	# increment of time steps until an output to the screen is done (24 = each day one output, if time steo = 1h)
+0             		# warning level for interpolation (no station within search radius)
+1             		# unit of routed discharge (0=mm/timestep, 1=m3/s)
+0            		# minutes from the hour-entry in the input data files until the end 
+					# of the time step is reached: 0 if the end of time step is given like "84 01 01 01", 
+					# but it should be $time if the begin is given like in "84 01 01 00"
+timestep = $time 	# optional for hourly time step but mandatory for shorter time steps like 10min or 5 min or so
+WriteAsciiGrids = 0 	# 0 if grids should be written in WaSiM native format, 1 if in ESRI ASCII format
+WriteDoubleGrids = 0 	# 0 if grids should be written in WaSiM native format, 1 if in ESRI ASCII format
+InitialStateDirectory = $inpath_ini		# if using this parameter, all state grids  as well as the storage_richards.ftz file will be expected in that directory for reading
+DefaultOutputDirectory = $outpath 	# this is the default output directory, all output is written to unless the given filename contains an absolute path 
+# 									there are some exceptions, though: for external coupling no default output path is used
+# 									relative pathnames may be used as well.
+# 									for compatibility reasins with older control files and WaSiM versions, both directories will only be used if the given filename has no absolute path,
+# 									so in order to use the new features, all $outpath uses should be reviewed and removed if necessary (or the variable should be set to an empty string)
+
+[coordinates]
+41844           	# geogr. latitude (center of the basin -> for radiation calculations)
+2187558            	# geogr. longitude (center of the basin)
+15.0          	 	# meridian according to the official time (middle europe: 15)(east: 0 ... +180 degree, west: 0 ... -180 (or 360 ... 180)
+0              		# time shift of Meteo-data-time with respect to the true local time (mean sun time)
+#						 e.g.: if meteo-data are stored in UTC-time and the time meridian is 15 east (central europe),
+# 						than the local time is 1 hour later than the time in the meteo-data-file, so 1 hour has to be added to the time from this file
+# 						this is important for calculation of sunshine duration and radiation
+
+
+[soil_surface_groundwater_substeps]
+1 
+
+[region_transition_distance]
+1000 							  # in m
+
+[elevation_model]
+$inpath_grid//$elevation_model    # grid with the digital elevation data
+
+[zone_grid]
+$inpath_grid//$zone_grid          # grid with Zone codes
+
+
+# there is a simple possibility starting with WaSiM 8.10.03 to do the nearest neighbor filling permanently: simply set the writecode for the standardgrid to 8 and the grid 
+# will be writen to the default output directory with it's original name but an additional suffix "filled". Once thsi grid is written, it can be converted to binary optionally and 
+#used as input grid (without fillcode = 1 then).
+
+[standard_grids]
+8                  # number of standard grids
+# pathes							identification         	fillcode 0=no, 1=yes (fill missing values with values of nearest neighbor)
+$inpath_grid//$land_use_grid    	landuse  				1 			# writecode = 8 readcode = 1 outname = $outpath//$land_use_grid # grid with land use data (will be written out after reading in for getting the filles values)
+$inpath_grid//$slope_grid       	slope_angle             1    		# grid with slope angle data
+$inpath_grid//$aspect_grid      	slope_aspect            1    		# grid with slope aspect data
+$inpath_grid//$subcatchments    	zonegrid_soilmodel      1    		# zone grid for the runoff generation model (and unstaurated zone model)
+$inpath_grid//$soil_types       	soil_types              1 			# defaultValue = 1      writecode = 8 readcode = 0 outname = $outpath//$soil_types     		# soil types as codes for the soil table
+$inpath_grid//$flow_time_grid   	flow_times              0 			# writecode = 8 readcode = 1 outname = $outpath//$flow_time_grid  		# grid with flow times for surface runoff to the subbasin outlet
+$inpath_grid//$ice_firn_grid    	ice_firn                0   		# grid with firn or ice cells (code 0: nodata values should not be replaced by nearest neighbour)
+$inpath_grid//$TWIgrid				topographic_faktor	  	1           # topographic factor, used for topmodel version only
+
+
+#--------------------------------------
+# variable grid definitions
+#--------------------------------------
+$set $var_grd		 		  = GRD//$sep//variable_grids//$sep
+$set $glacierizedCells_grid   = $var_grd//glca.grd
+$set $glacier_codes_grid      = $var_grd//glid.grd
+$set $albedo               	  = $var_grd//albe.grd
+$set $soilstoragegrid      	  = $var_grd//sb.grd
+#--------------------------------------
+
+[variable_grids]
+4                                                     			# Number of variable grids to read
+$outpath//$albedo            		albedo           1  0 		# albedo; for time without snow derived from land use data
+$Writegrid                                             			# Writegrid for $albedo
+$readgrids                                             			# 0, if albedo is derived from land use at model start time, 1, if albedo is read from file
+$outpath//$soilstoragegrid   		soil_storage     1  0 		# soil water storage
+$Writegrid                                             			# Writegrid for this grid
+$readgrids                                             			# 0, if soil_storage should be derived from soil types, 1, if it should be read from file
+$outpath//$glacierizedCells_grid 	GlacierizedCells 0  -9999 	# glacierized fraction of each cell (0...1, -9999 for all-time non-glacierized cells) when using the dynamic glacier model; wasim will check if there are only nodata. If yes, the _ice_firn_ grid will be used for initialization of the glacier cells
+3			                                          			# Writegrid for glacerized cells
+1            													# readgrid should always be 1 since otherwise no glacier would be created
+$outpath//$glacier_codes_grid    	GlacierCodes     0  -9999 	# codes for each single glacier. This grid is required when using the dynamic glacier model. It separates multiple glaciers even in the same subbasin for a applying the V-A-relation correctly
+3		                                            			# Writegrid for glacier codes
+1           													# should always be 1 since otherwise no glacier zones could be created in the dynamic glacier model
+
+
+[model_time]
+$starthour              #  start hour
+$startday               #  start day
+$startmonth             #  start month
+$startyear        		#  start year
+$endhour                #  end hour
+$endday                 #  end day
+$endmonth               #  end month
+$endyear            	#  end year
+
+
+[meteo_data_count]
+5
+
+[meteo_names]
+temperature
+precipitation
+wind_speed
+global_radiation
+air_humidity
+# sunshine_duration
+# vapor_pressure
+
+#--------------------------------------
+# output for the meteo interpolation
+#--------------------------------------
+$set $meteo_grd 	= GRD//$sep//meteo//$sep
+$set $preci_grid    = $meteo_grd//prec.grd
+$set $tempgrid      = $meteo_grd//temp.grd
+$set $oc_met 		= STAT//$sep//meteo//$sep
+
+#--------------------------------------
+# Parameters for the meteo interpolation
+#--------------------------------------
+$set $res_corr = 1.0 					# [0.8, 1.2]
+$set $res_corrPRE = 1.02
+
+$set $SzenUse        =  0
+$set $IDWmaxdist     =  2500
+$set $IDWweight      =  0.3
+$set $Anisoslope     =  35.0
+$set $Anisotropie    =  0.65
+#--------------------------------------
+
+[temperature]
+10				                        				# methods, see comments above
+$inpath_meteo//fundus_td.txt  AdditionalColumns=0   	# file name with station data (if method = 1, 3 or 4, else ignored)
+2000 2500 100 1 300 									# lower inversion [m asl], upper inversion [m asl], tolerance [m], overlap [0/1 for true/false], clusterlimit [m]
+$outpath//$tempgrid         				            # name of the output grid (is also used for deriving names of daily, monthly, yearly sums or averages)
+$grd_run_mean	                    					# 0, if no grid-output is needed, else one of the codes described above
+$res_corr                           					# correction faktor for results
+$outpath//$oc_met//temp.stat		 $no_output  		# file name for the statistic output (statially averaged values per time step and subcatchment...)
+998                           							# error value: all data in the input file greater than this values or lesser the negative value are nodata
+$IDWweight                    							# weighting of the reciprocal distance for IDW
+0.1                          							# for interpolation method 3: relative weight of IDW-interpolation in the result
+$IDWmaxdist                   							# max. distance of stations to the actual interpolation cell
+$Anisoslope                   	      					# slope of the mean axis of the anisotropy-ellipsis (-90 ... +90 degree, mathem. positive)
+$Anisotropie                  	      					# ratio of the short to the long axis of the anisotropy-ellipsis
+-40                           							# lower limit of interpolation results
+-40                           							# replace value for results below the lower limit
+40                            							# upper limit for interpolation results
+40                            							# replace value for results with larger values than the upper limit
+$SzenUse                      							# 1=use scenario data for correction, 0=dont use scenarios
+0                             							# 1=add scenarios, 2=multiply scenarios, 3=percentual change
+4                             							# number of scenario cells
+
+[precipitation]
+11                             							# method: 1=idw 2=regress 3=idw+regress 4=thiessen 5=bilinear 6=bilinear gradients and residuals linarly combined
+$inpath_meteo//fundus_pd.txt  AdditionalColumns=0   	# file name with station data (if method = 1, 3 or 4, else ignored)
+2000 2500 100 1 300 									# lower inversion [m asl], upper inversion [m asl], tolerance [m], overlap [0/1 for true/false], clusterlimit [m]
+$outpath//$preci_grid      	 							# name of the output grid (is also used for deriving names of daily, monthly, yearly sums or averages)
+$grd_run_mean                    					    # 0, if no grid-output is needed, else one of the codes described above
+$res_corrPRE                           					# correction faktor for results
+$outpath//$oc_met//prec.stat 		$day_sum  			# file name for the statistic output (statially averaged values per time step and subcatchment...)
+998                           							# error value: all data in the input file greater than this values or lesser the negative value are nodata
+$IDWweight                    							# weighting of the reciprocal distance for IDW
+0.75                          							# for interpolation method 3: relative weight of IDW-interpolation in the result
+$IDWmaxdist                   							# max. distance of stations to the actual interpolation cell
+$Anisoslope                  	      					# slope of the mean axis of the anisotropy-ellipsis (-90 ... +90 degree, mathem. positive)
+$Anisotropie                  	      					# ratio of the short to the long axis of the anisotropy-ellipsis
+0.1                      			     				# lower limit of interpolation results
+0                            			 				# replace value for results below the lower limit
+900                           							# upper limit for interpolation results
+900                           							# replace value for results with larger values than the upper limit
+$SzenUse                      							# 1=use scenario data for correction, 0=dont use scenarios
+2                             							# 1=add scenarios, 2=multiply scenarios, 3=percentual change
+1 	                      								# number of scenario cells
+
+
+[wind_speed]
+11                             							# method: 1=idw 2=regress 3=idw+regress 4=thiessen 5=bilinear 6=bilinear gradients and residuals linarly combined
+$inpath_meteo//fundus_wd.txt AdditionalColumns=0  		# file name with station data (if method = 1, 3 or 4, else ignored)
+2000 2500 100 1 300 									# lower inversion [m asl], upper inversion [m asl], tolerance [m], overlap [0/1 for true/false], clusterlimit [m]
+$outpath//$meteo_grd//wind.grd           				# name of the output grid (is also used for deriving names of daily, monthly, yearly sums or averages)
+$grd_run_mean                  							# 0, if no grid-output is needed, else one of the codes described above
+$res_corr                           					# correction faktor for results
+$outpath//$oc_met//wind.stat	 	$no_output	  		# file name for the statistic output (statially averaged values per time step and subcatchment...)
+998                           							# error value: all data in the input file greater than this values or lesser the negative value are nodata
+$IDWweight                    							# weighting of the reciprocal distance for IDW
+0.30                           							# for interpolation method 3: relative weight of IDW-interpolation in the result
+$IDWmaxdist                   							# max. distance of stations to the actual interpolation cell
+$Anisoslope                   							# slope of the mean axis of the anisotropy-ellipsis (-90 ... +90 degree, mathem. positive)
+$Anisotropie                  							#  ratio of the short to the long axis of the anisotropy-ellipsis
+0                             							# lower limit of interpolation results
+0                             							# replace value for results below the lower limit
+90                            							# upper limit for interpolation results
+90                            							# replace value for resul$radiationgridevarts with larger values than the upper limit
+$SzenUse                      							# 1=use scenario data for correction, 0=dont use scenarios
+3                             							# 1=add scenarios, 2=multiply scenarios, 3=percentual change
+4                             							# number of scenario cells
+
+[global_radiation]
+11                             							# method: 1=idw 2=regress 3=idw+regress 4=thiessen 5=bilinear 6=bilinear gradients and residuals linarly combined
+$inpath_meteo//fundus_rd.txt AdditionalColumns=0  		# file name with station data (if method = 1, 3 or 4, else ignored)
+2000 2500 100 1 300 									# lower inversion [m asl], upper inversion [m asl], tolerance [m], overlap [0/1 for true/false], clusterlimit [m]
+$outpath//$meteo_grd//rad.grd      						# name of the output grid (is also used for deriving names of daily, monthly, yearly sums or averages)
+$grd_run_mean                  							# 0, if no grid-output is needed, else one of the codes described above
+$res_corr                           					# correction faktor for results
+$outpath//$oc_met//rad.stat	 		$no_output	 		# file name for the statistic output (statially averaged values per time step and subcatchment...)
+998                          							# error value: all data in the input file greater than this values or lesser the negative value are nodata
+$IDWweight                    							# weighting of the reciprocal distance for IDW
+0.5                           							# for interpolation method 3: relative weight of IDW-interpolation in the result
+$IDWmaxdist                   							# max. distance of stations to the actual interpolation cell
+$Anisoslope                   							#  slope of the mean axis of the anisotropy-ellipsis (-90 ... +90 degree, mathem. positive)
+$Anisotropie                  							#  ratio of the short to the long axis of the anisotropy-ellipsis
+0                             							# lower limit of interpolation results
+0                             							# replace value for results below the lower limit
+13000                          							# upper limit for interpolation results
+13000                         							# replace value for results with larger values than the upper limit
+$SzenUse                      							# 1=use scenario data for correction, 0=dont use scenarios
+1                             							# 1=add scenarios, 2=multiply scenarios, 3=percentual change
+4                             							# number of scenario cells
+
+
+[air_humidity]
+11                             							# method: 1=idw 2=regress 3=idw+regress 4=thiessen 5=bilinear 6=bilinear gradients and residuals linarly combined
+$inpath_meteo//fundus_hd.txt AdditionalColumns=0  		# file name with station data (if method = 1, 3 or 4, else ignored)
+2000 2500 100 1 300 									# lower inversion [m asl], upper inversion [m asl], tolerance [m], overlap [0/1 for true/false], clusterlimit [m]
+$outpath//$meteo_grd//humi.grd       					# name of the output grid (is also used for deriving names of daily, monthly, yearly sums or averages)
+$grd_run_mean                  						    # 0, if no grid-output is needed, else one of the codes described above
+$res_corr                          						# correction faktor for results
+$outpath//$oc_met//humi.stat   			$no_output	 	# file name for the statistic output (statially averaged values per time step and subcatchment...)
+998                          							# error value: all data in the input file greater than this values or lesser the negative value are nodata
+$IDWweight                    							# weighting of the reciprocal distance for IDW
+0.5                          							# for interpolation method 3: relative weight of IDW-interpolation in the result
+$IDWmaxdist                								# max. distance of stations to the actual interpolation cell
+$Anisoslope                   							#  slope of the mean axis of the anisotropy-ellipsis (-90 ... +90 degree, mathem. positive)
+$Anisotropie                  							#  ratio of the short to the long axis of the anisotropy-ellipsis
+0.01                          							# lower limit of interpolation results
+0.01                          							# replace value for results below the lower limit
+1.0                           							# upper limit for interpolation results
+1.0                           							# replace value for results with larger values than the upper limit
+$SzenUse                      							# 1=use scenario data for correction, 0=dont use scenarios
+3                             							# 1=add scenarios, 2=multiply scenarios, 3=percentual change
+1                             							# number of scenario cells
+
+
+# ----------  parameter for model components  -----------------
+
+[RegionalSuperposition]
+0
+$time
+NumberOfEntities = 1;
+precipitation {
+	entityinputgrid = precipitation_reg1 ;
+		regions = 1   2   ;
+		weights = 1.0 0.0 ;
+	entityinputgrid = precipitation_reg2 ;
+		regions = 1   2   ;
+		weights = 0.0 1.0 ;
+	outputgrid  = $outpath//$preci_grid ; 
+		writecode = 1//$Writegrid ;        
+	outputtable = $outpath//prec//$grid//.//$code//$year;
+		statcode  = $no_output;
+}
+temperature {
+	entityinputgrid = temperature_reg1 ;
+		regions = 1   2   ;
+		weights = 1.0 0.0 ;
+	entityinputgrid = temperature_reg2 ;
+		regions = 1   2   ;
+		weights = 0.0 1.0 ;
+	outputgrid  = $outpath//$tempgrid ; 
+		writecode = 5//$Writegrid ;        
+	outputtable = $outpath//t2m_//$grid//.//$code//$year;
+		statcode  = $no_output;
+}
+
+#--------------------------------------
+# Parameters for precipitation correction
+#--------------------------------------
+$set $SRT = 0.9089418288664823 
+$set $Bl = 1.04
+$set $Al = 0.1
+$set $Bs = 1.055470893495477 
+$set $As = 0.19096590617296963 
+#--------------------------------------
+
+[precipitation_correction]
+1                     # 0=ignore this module, 1 = run the module
+$SRT                  # Snow-rain-temperature
+$Bl                   # liquid:   b in:  y = p(ax + b)
+$Al                   # liquid:   a in:  y = p(ax + b) = 1% more per m/s + 0.5% constant
+$Bs                   # Snow:     b in:  y = p(ax + b)
+$As                   # Snow:     a in:  y = p(ax + b) = 15% more per m/s + 45% constant
+
+#--------------------------------------
+# Parameters for the radiation correction
+#--------------------------------------
+$set $scTR = 3.5131837697095145 
+#--------------------------------------
+
+[radiation_correction]
+1                    					# 0=ignore this module, 1 = run the module
+$time                					# duration of a time step in minutes
+2                    					# control parameter for radiation correction (see above)
+$outpath//$meteo_grd//tcor.grd 			# name of the grids with the corrected temperatures
+$grd_run_mean          					# Writegrid for corrected temperatures
+$scTR									# scaling factor for temperature correction
+$outpath//$meteo_grd//exco.grd   		# name of the grids with the correction factors for the direct radiation
+$Writegrid           					# Writegrid
+$outpath//$meteo_grd//shap.grd 			# name of the grids for codes 1 for theor. shadow, 0 for theor. no shadow (day; assumed: SSD=1.0)
+$Writegrid           					# Writegrid
+1                    					# interval counter, after reaching this value, a new correction is calculated (3=all 3 hours a.s.o.)
+1                    					# Spitting of the interval, usefull for time step=24 hours (then: split=24, -> each hour one correction calculation)
+
+#--------------------------------------
+# Output for the evapotranspiration
+#--------------------------------------
+$set $et_grd 	 	= GRD//$sep//et//$sep
+$set $oc_et 		= STAT//$sep//et//$sep
+#--------------------------------------
+# Parameters for the evapotranspiration
+#--------------------------------------
+
+#--------------------------------------
+
+[evapotranspiration]
+1                        									# 0=ignore this module, 1 = run the module
+$time                    									# duration of a time step in minutes
+1                        									# Method: 1=Penman-Monteith, 2=Hamon (only daily), 3=Wendling (only daily) 4= Haude (only daily)
+0.5  0.6  0.8  1.0  1.1 1.1 1.2 1.1 1.0 0.9 0.7 0.5  		# PEC correction factor for HAMON-evapotranspiration
+0.20 0.20 0.21 0.29 0.29 0.28 0.26 0.25 0.22 0.22 0.20 0.20 # fh (only for method 4: Haude) monthly values (Jan ... Dec) (here: for Grass)
+0.5                      									# fk -> factor for Wendling-evapotranspiration (only for Method = 3)
+$outpath//$et_grd//etp.grd      							# result grid for pot. evapotranspiration in mm/dt
+$grd_run_mean           									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//etp.stat	 		$day_sum 				# statisticfile for Teilgebiete of pot. evapo-Transpiration
+$outpath//$et_grd//etr.grd 									# result grid for real evapotranspiration in mm/dt
+$grd_run_mean  			 									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//etr.stat	 		$day_sum 				# statistic for subcatchments (zones) of the real evapotranspiration
+$outpath//$et_grd//evap.grd									# result grid for real evaporation in mm/dt
+$grd_run_mean           									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//evap.stat	 		$day_sum		 		# statistic for subcatchments (zones) of the potential evaporation
+$outpath//$et_grd//evar.grd									# result grid for real evapotranspiration in mm/dt
+$grd_run_mean            									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//evar.stat			$day_sum				# statistic for subcatchments (zones) of the real evaporation
+$outpath//$et_grd//etrs.grd	 								# result grid for real snow evapotranspiration in mm/dt
+$grd_run_mean       	 									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//etrs.stat			$day_sum				# statistic for subcatchments (zones) of the real snow evaporation
+$outpath//$et_grd//eip.grd 									# result grid for pot. interception evaporation in mm/dt
+$grd_run_mean	               								# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_et//eip_.stat			$day_sum 				# statisticfile for zones of pot. interception evaporation
+$outpath//$oc_et//rgex.stat			$day_sum 				# statistic for subcatchments (zones) of the corrected radiation
++0.23   +1.77    -2.28    +1.28    							# coefficients c for Polynom of order 3 RG = c1 + c2*SSD + c3*SSD^2 + c4*SSD^3
++0.072  -0.808   +2.112   -0.239   							# coefficients x for Polynom of order 3 SSD = x1 + x2*RG + x3*RG^2 + x4*RG^3
+0.88 0.05                          							# Extinktion coefficient for RG-modeling (Phi and dPhi) (summer phi = phi-dphi, winter phi=phi+dphi)
+1654.0                             							# recession constant (e-function for recession of the daily temperature amplitude with altitude [m])
+3.3  4.4  6.1  7.9  9.4  10.0  9.9  9.0  7.8  6.0  4.2  3.2 # monthly values of the max. daily T-amplitudes (for 0 m.a.s.l)
+0.62  0.1                          							# part of the temperature amplitude (dt), that is added to the mean day-temperature
+$outpath//$oc_et//cloud.stat		$day_sum		 		# statistic for subcatchments (zones) of the corrected radiation
+
+#--------------------------------------
+# Output for the snowmodel
+#--------------------------------------
+$set $oc_snow 		= STAT//$sep//snow//$sep
+$set $snow_grd		= GRD//$sep//snow//$sep
+#--------------------------------------
+# Parameters for the snow model 
+#--------------------------------------
+
+$set $T0Z = 1.819337998465812 
+$set $T0R = 1.0172468200400053 
+$set $T0M = 1.0194731761660714 
+$set $CWH = 0.4548932212263287 
+$set $RFC = 0.13101115685289838 
+$set $DDF = 1.87
+#--------------------------------------
+
+[snow_model]
+1                    										# 0=ignore this module, 1 = run the module
+$time                										# duration of a time step in minutes
+1                  											# method 1=T-index, 2=t-u-index, 3=Anderson comb., 4=extended com. 
+$T0Z                 										# transient zone for rain-snow (T0R +- this range)
+$T0R    	         										# T0R    temperature limit for rain (Grad Celsius)
+$T0M          												# T0     temperature limit snow melt
+$CWH                 										# CWH    storage capacity of the snow for water (relative part)
+$RFC                  										# CRFR   coefficient for refreezing
+$DDF #$DDF $DDF $DDF $DDF $DDF $DDF $DDF $DDF $DDF $DDF $DDF  	# C0 degree-day-factor mm/d/C (1 value: constant for all months, 12 values: one value per month, linear interpolation between values, new values valid from each 16th)
+$DDF #1.0  1.0  1.0  1.1  1.2  1.2  1.3  1.2  1.1  1.0  1.0  1.0  # C1 degree-day-factor without wind consideration  mm/(d*C) (1 value: constant for all months, 12 values: one value per month, linear interpolation between values, new values valid from each 16th)
+$DDF #0.7  0.7  0.7  0.8  0.9  0.9  0.9  0.8  0.7  0.7  0.7  0.7  # C2 degree-day-factor considering wind mm/(d*C*m/s) (1 value: constant for all months, 12 values: one value per month, linear interpolation between values, new values valid from each 16th)
+0.07                 										# z0     roughness length cm for energy bilance methods (not used)
+1.5                  										# RMFMIN minimum radiation melt factor      mm/d/C comb. method
+2.5                  										# RMFMAX maximum radiation melt factor      mm/d/C comb. method
+0.50  #0.45          										# Albedo for snow (Min)
+0.90  #0.90          										# Albedo for snow (Max)
+$outpath//$snow_grd//rain.grd         						# rain rate
+0			                   								# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//rain.stat		$no_output			 	# rain rate (sum per timestep)
+$outpath//$snow_grd//snow.grd         						# snow rate
+0			                   								# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//snow.stat		$no_output			 	# snow rate
+$outpath//$snow_grd//sday.grd         						# days with snow (SWE > 5mm)
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//sday.stat		$no_output				# days with snow (SWE > 5mm)
+$outpath//$snow_grd//sage.grd          						# snow age (days without new snow)
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//sage.stat		$no_output		 		# days since last snowfall
+$outpath//$oc_snow//albe.stat		$no_output		 		# Albedo
+$outpath//$snow_grd//qsno.grd 								# discharge from snow, input (precipitation) for following modules
+$grd_run_sum	                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//qsch.stat		$day_sum 				# melt flow (or rain, if there is no snow cover) in mm/dt
+$outpath//$snow_grd//qsme.grd 								# discharge from snow, input (precipitation) for following modules
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//qsme.stat		$day_sum		 		# melt flow in mm/dt
+$outpath//$snow_grd//ssno.grd          						# name of the grids with the snow storage solid in mm
+$grd_run_mean	                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//sliq.grd          						# name of the grids with the snow storage liquid in mm
+$grd_run_mean	                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_snow//ssto.stat		$day_mean		 		# total snow storage, in mm, (liquid and solid fraction)
+$outpath//$snow_grd//ssto.grd          						# name of the grids with the total snow storage solid AND liquid in mm
+$grd_run_mean	                   							# 0, if no grid-output is needed, else one of the codes described above
+$readgrids                   								# 1=read snow storage solid, liquid grids from disk, 0=generate new grids
+# now some new parameters and file names follow for the snow model extensions implemented in 2014 (originally done by M. Warscher and adopted and a little bit extended to the publicly available release in 2014 by J. Schulla)
+$outpath//$snow_grd//snowtemp.grd      						# result grid with snow pack temperature
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//snowtemp.//$code//$year	$no_output 	# temperature of the snow pack (used for new energy balance model)
+$outpath//$snow_grd//ssrftemp.grd  							# result grid with snow surface temperature 
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//ssrftemp.//$code//$year	$no_output 	# temperature of the snow surface (used for new energy balance model)
+$outpath//$snow_grd//inpmass.grd           					# result grid with snow surface temperature
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//inpmass.//$code//$year		$no_output 	# input mass for snow redistribution (gravitational snow slides)
+$outpath//$snow_grd//mobmass.grd          					# result grid with input mass for gravitational snow slides
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//mobmass.//$code//$year 	$no_output 	# moving/mobile mass for snow redistribution (gravitational snow slides)
+$outpath//$snow_grd//deposit.grd          					# result grid with deposition amount for each cell (gravitational snow slides)
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$snow_grd//deposit.//$code//$year 	$no_output 	# deposition amount (mm) for gravitational slides
+55															# maximum deposition slope (0...90)
+2															# scaling for maximum deposition (0..inf)
+30															# minimum slope for creating slides (0...90) (scale dependent! The coarser the resolution, the smaller this value must be since the average slope decreases).
+0.01														# fraction of snow pack that forms the slide (0...1]
+1.00														# LWINcorr: correction factor for incoming long wave radiation for fine tuning the energy balance (accouting together with LWOUTcorr for errors in cloudiness and albedo); recommended Values: 0.8...1.2
+0.40	# 0.85 												# LWOUTcorr: correction factor for outgoing long wave radiation for fine tuning the energy balance (accouting together with LWINcorr for errors in cloudiness and albedo): recommended Values: 0.8...1.2
+
+#--------------------------------------
+# Output for the glacier model
+#--------------------------------------
+$set $oc_gl 		= STAT//$sep//glacier//$sep
+$set $glc_grd       = GRD//$sep//glacier//$sep
+#--------------------------------------
+# Parameters for the glacier model 
+#--------------------------------------
+
+$set $TI_ice = 1.0352456787047082 
+$set $TI_firn = 1.8829181440016862 
+$set $TI_snow = 1.882827803063416 
+$set $MF = 0.9539198718031184 
+$set $RCice_min = 0.00046 
+$set $RCice_max = 0.00034 
+$set $RCsnow_min = 0.00036
+$set $RCsnow_max = 0.00061
+$set $ELS_ice = 25.85362160316897 
+$set $ELS_firn = 141.00204254827773 
+$set $ELS_snow = 38.74631275312779 
+$set $ice_ini = 0.7
+$set $firn_ini = 0.4
+$set $snow_ini = 0.4
+#--------------------------------------
+
+[ice_firn]
+13   														# method for glacier melt: 1=classical t-index, 2=t-index with correction by radiation, 11 = dynamic glacier model with classical t-index, 12 = dynamic glacier model with radiation correction, 13 = melt methods are taken from snow model (for snow only)
+$TI_ice                           							# t-index factor for ice
+$TI_firn                        							# t-index factor for firn
+$TI_snow                        							# t-index factor for snow
+$MF                       									# melt factor (when using radiation correction in methods 11...13)
+$RCice_min 	   												# radiation coefficient for ice_min  (for method 2/12/13)
+$RCice_max      											# radiation coefficient for ice_max  (for method 2/12/13)
+$RCsnow_min            										# radiation coefficient for snow and firn min (for method 2/12/13)
+$RCsnow_max 	   											# radiation coefficient for snow and firn max (for method 2/12/13)
+$ELS_ice	   												# els-konstante for ice
+$ELS_firn	  												# els-konstante for firn
+$ELS_snow		   											# els-konstante for snow
+$ice_ini  													# initial reservoir content for ice discharge (single linear storage approach)
+$firn_ini  													# initial reservoir content for firn discharge (single linear storage approach)
+$snow_ini  													# initial reservoir content for snow discharge (single linear storage approach)
+$outpath//$glc_grd//qfir.grd   								# melt from firn
+$grd_run_sum				                   				# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_gl//qfir.stat				$day_sum			# melt from firn as statistic file
+$outpath//$glc_grd//qice.grd   								# melt from ice
+$grd_run_sum	                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_gl//qice.stat				$day_sum			# melt from ice as statistic file
+$outpath//$oc_gl//qglc.stat				$day_sum			# discharge from snow, ice and firn as statistic file
+# -----------------------------------------------------------------------------
+# now some new parameters for the new dynamic glacier model (methods 11 and 12)
+$outpath//$oc_gl//qsgl.stat				$no_output			 	# melt from snow from glacier only as statistic file (but still with respect tothe subbasins areas!) --> new in version 8.07.00
+0			                									# 1=read grids and stacks from disk, 0=generate new grids and stacks (using the parameters in the following line for WE_Firn stack)
+7 2800 1.8 														# number of layers for the firn stack, followed by two initialization parameters: average Equilibrium line elevation in m (e.g. 2500) and change rate of WE per m in mm (e.g. 2) -> every 100m the WE of firn in each layer will grow by 200mm
+09 30 															# month and day (hour is set automatically to 24) for which the Volume-Area-Relation will be applied newly (and temporary (i.e. internal) Balances are reset to 0)
+28.5 3.36 10 4 													# VAscaling and VAexponent for Volume-Area-Relation of glaciers and number of iterations (elevation belts) and extraWeightFactorBand0 (elevation band 0 will be processed in each iteration this given number of times more than once. Default = 0)
+$outpath//$glc_grd//glfirn//$stack  							# water equivalent for firn (given as stack, number of layers taken from the parameter given before); layer 0 will contain the total WE for all firn layers
+$grd_run_mean  													# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_gl//glfirn.stat			$day_mean			 	# water equivalent for firn as statistics file (sum over all firn layers)
+$outpath//$glc_grd//glmb.grd 									# output grid with mass balance of the glacier
+$grd_run_mean              										# 3: write at end of simulation (important to start another model run with correct initialization values)
+$outpath//$glc_grd//glmb_old.grd 								# output grid with mass balance of the glacier
+3	                     										# 3: write at end of simulation (important to start another model run with correct initialization values)
+$outpath//$oc_gl//glmb.stat				$day_mean		 		# mass balance for the glaciers as statistics file (mass balance for each time step with respect to the entire subbasin the glaciers are located in)
+$outpath//$oc_gl//glmb2.stat			$no_output				# mass balance for the glaciers as statistics file (mass balance for each time step with respect to the glaciers only!)
+1.0																# additional parameter when using a debris grid: this value is used to globally scale the values of the debris grid. Only values > nodata are regarded, i.e. when a cells melt coefficient should  not be altered, the debris grid should contain -9999 at this location
+# some new parameters for better statistic output (for balance verfication) and also separate handling of snow on glaciers and beside glaciers on the same cell
+$outpath//$oc_gl//ssto_OffGlac.stat		$day_mean			 	# total snow storage, in mm, (liquid and solid fraction) for the unglacierized part of a cell (usefull for annual balances of all inputs/outputs/storages, since snow on glaciers is handled in the glacier mass balance already)
+$outpath//$glc_grd//ssno_onGlac.grd      						# name of the grids with the snow storage solid in mm valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//sliq_onGlac.grd      						# name of the grids with the snow storage liquid in mm valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//ssto_onGlac.grd    							# name of the grids with the total snow storage solid AND liquid in mm valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//qsmegl.grd    								# name of the grids with the total snow outflow in mm valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//ssrftempgl.grd								# name of the grids with snow surface temperature, valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//snowtempgl.grd    							# name of the grids with snow pack temperature, valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$glc_grd//etrsgl.grd    								# name of the grids with snow evaporation in mm, valid for the glacierized part of a cell
+0                   											# 0, if no grid-output is needed, else one of the codes described above
+
+#--------------------------------------
+# Output for the interception model
+#--------------------------------------
+$set $oc_int 		= STAT//$sep//interception//$sep
+$set $int_grd       = GRD//$sep//interception//$sep
+#--------------------------------------
+# Parameters for the interception model 
+#--------------------------------------
+
+$set $SC_leaves = 0.9106347438630156 
+#--------------------------------------
+
+[interception_model]
+1                            								# 0=ignore this module, 1 = run the module
+$time                        								# duration of a time step in minutes
+1															# method: 1 = use ETP for calculating EI; 2 = use EIP for calculating EI (only effective for method 1 in evapotranspiration model -> for other methods, ETP = EIP), 11 = like one but before snow model, 12=like 2 but before snow model
+$outpath//$int_grd//qi.grd     								# result grid :  = outflow from the interception storage
+0				                   							# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//qi.stat			$day_sum			 	# statistic file interception storage outflow
+$outpath//$int_grd//ei.grd     								# Interzeption evaporation, grid
+0		                									# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//ei.stat			$day_sum			 	# zonal statistic
+$outpath//$int_grd//si.grd            						# storage content of the interception storage
+53			                   								# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//si.stat			$day_mean			 	# zonal statistic For interception storage content
+$SC_leaves                        							# layer thickness of the waters on the leaves (multiplied with LAI -> storage capacity)
+$readgrids                   								# 1=read grids from disk, else generate internal
+# new parameters for snow interception model (implemented by Kristian Förster)
+# method must be 21, 22, 31 or 32 (where 31 and 32 will additionally switch on canopy) 
+# energy balance, see above
+$outpath//$int_grd//SCNTEMP.grd            					# Sub-canopy temperature, grid
+0                   										# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNTEMP.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNRH.grd              					# Sub-canopy relative humidity, grid
+0                   										# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNRH.//$code//$year			$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNRAD.grd             					# Sub-canopy shortwave radiation, grid
+0                  											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNRAD.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNWIND.grd            					# Sub-canopy temperature, grid
+0                   										# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNWIND.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNLOAD.grd           	 				# Snow interception load, grid
+0                 											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNLOAD.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNAGE.grd             					# Age of intercepted snow, grid
+0                 											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNAGE.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNALB.grd             					# Albedo of intercepted snow, grid
+0                 											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNALB.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNSUBL.grd            					# Sublimation of intercepted snow, grid
+0                   										# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNSUBL.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNUNLOAD.grd          					# unload (incl. melt) of intercepted snow, grid
+0                   										# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNUNLOAD.//$code//$year		$hour_mean 	# zonal statistic
+$outpath//$int_grd//SCNLIQOUT.grd          					# liquid water output of the snow canopy model, grid
+0                  											# 0, if no grid-output is needed, else one of the codes described above
+$outpath//$oc_int//SCNLIQOUT.//$code//$year	$hour_mean 	# zonal statistic
+0.4         												# minimum LAI value above which the snow canopy model will be started
+0.16        												# minimum Z0 value above which the snow canopy model will be started
+1.52														# LAI scaling factor for the snow canopy model --> CALIBRATION!!
+# new algorithms for interception canopy energy balance, implemented by Matthias Kopp, methods must be 31 or 32, this includes snow canopy interception
+$outpath//$int_grd//CEB_CANENBAL.grd          
+$Writegrid                   
+$outpath//$oc_int//CEB_CANENBAL.//$code//$year		$hour_mean 		# zonal statistic
+$outpath//$int_grd//CEB_CANTEMP.grd          
+$Writegrid
+$outpath//$oc_int//CEB_CANTEMP.//$code//$year		$hour_mean 		# zonal statistic
+$outpath//$int_grd//CEB_CANTEMP_OLD.grd          
+$Writegrid                   
+$outpath//$oc_int//CEB_CANTEMP_OLD.//$code//$year	$hour_mean 		# zonal statistic
+$outpath//$int_grd//CEB_DUMMY.grd          
+$Writegrid                   
+$outpath//$oc_int//CEB_DUMMY.//$code//$year			$hour_mean 		# zonal statistic
+
+#--------------------------------------
+# Output for the infiltration model
+#--------------------------------------
+$set $oc_infl 		= STAT//$sep//infiltration//$sep
+$set $infl_grd      = GRD//$sep//infiltration//$sep
+#--------------------------------------
+# Parameters for the infiltration model
+#--------------------------------------
+
+$set $rin = 0.4550056956944752 
+#--------------------------------------
+
+[infiltration_model]
+1                            								# 0=ignore this module, 1 = run the module
+$time                        								# duration of a time step in minutes
+$outpath//$infl_grd//infx.grd         						# grid with infiltration excess in mm (surface runoff)
+1//$Writegrid                								# for surface discharge (fraction 1)
+$outpath//$oc_infl//infx.stat		 $day_sum				# statistic file for the infiltration excess
+$outpath//$infl_grd//satt.grd          						# grid with code 1=saturation at interval start, 0 =no saturation.
+$Writegrid                   								# Writegrid for saturation code grids
+$rin                         								# fraction of reinfitrating water (of the infiltration excess)
+
+#--------------------------------------
+# Output for the surface routing model
+#--------------------------------------
+$set $oc_srm 		= STAT//$sep//surfacerouting//$sep
+$set $srm_grd       = GRD//$sep//.//$sep
+#--------------------------------------
+# Parameters for the surface routing model
+#--------------------------------------
+#--------------------------------------
+
+
+[SurfaceRoutingModel]
+0                            						# 0=ignore this module, 1 = run the module
+$time                        						# duration of a time step in minutes
+2                            						# method: 1=MultipleFlowPaths for diverging areas, 2=single flowpaths (nearest direction as given by aspect), 3=multiple flow paths dynamically based on water level, 4 = same as 3 but with single flow paths, 5 = simple v calculation without iteration (suited for back water conditions)
+$outpath//$oc_srm//qdsr.//$code//$year $hour_mean 	# direct discharge from surface routing module 
+$outpath//$oc_srm//qisr.//$code//$year $hour_mean 	# interflow from surface routing module
+$outpath//$oc_srm//qbsr.//$code//$year $hour_mean 	# baseflow from surface routing module 
+$outpath//$oc_srm//qgsr.//$code//$year $hour_mean 	# total discharge from surface routing module 
+$outpath//$srm_grd//sfcv.grd   						# grid with actual flow velocity of surface flow in m/s
+$Writegrid                   						# writegrid for this grid
+$outpath//$srm_grd//sflx.grd     					# grid with actual flow amounts of surface flow in m^3/s
+$Writegrid                  						# writegrid for this grid
+0.001                        						# maximum wake lenght iteration difference (if Delta_A_nl < this value, iteration for a_NL stops)
+40                           						# maximum number of iterations for a_NL
+0.0001                       						# maximum flow velocity iteration difference (if Delta v is less than this value, iteration stops)
+40                           						# maximum number of iterations for v
+30                           						# shortest sub-time step in seconds
+3600                         						#longest allowed sub time step (even if flow travel times are longer, the time step is subdivided into sub timesteps of this lenght) be careful: tracers are mixed much faster when multiple sub time steps are applied
+0.02                         						# minimum water depth for regarding roughenss of crops in m (shallower sheet flow: only roughness of bare soil will be regarded)
+2.0                          						# ConcentrationFactor takes into account the micro scale concentration of flow pathes, flow will take place on a fraction of the cell only, so the amount flowing per meter width will be multiplied by this factor (1..n)
+$readgrids                   						# readgrid code 0 do not read, 1 = read grids 
+$outpath//$oc_srm//sfstsr.stat	 		$hour_mean	# statistics for surface storage in mm per sub catchment
+
+#--------------------------------------
+# Output for the soil model
+#--------------------------------------
+$set $oc_s 			= STAT//$sep//soil//$sep
+$set $soil_grd      = GRD//$sep//soil//$sep
+#--------------------------------------
+# Parameters for the soil model
+#--------------------------------------
+
+$set $m_s = 0.025157625826226278 
+$set $T_korr = 0.00 
+$set $K_korr = 2819.318123459392 
+$set $K_D = 39.43173359247266 
+$set $SH_max = 45.48955539364377 
+$set $K_I = 166.56606418617335 
+$set $K_B = 722.66
+$set $mDP = 0.33183528088887126 
+$set $SB_ini = 0.257803744866214 
+$set $SUZ_ini = 0.9087748788125588 
+$set $nFK_s = 0.5539198718031184 
+$set $P_limit = 13.138963739432963 
+$set $rk = 0.25843713822412173 
+$set $cmelt = 0.2644703228278285 
+
+#--------------------------------------
+
+[soil_model]
+1 												# 0=ignore this module, 1 = run the module
+$time 											# duration of a time step in minutes
+1 												# method, 1 = nortmal base flow, 2 = with slow baseflow (not recommended)
+$outpath//$soil_grd//sd.grd 					# (new) saturation deficite-grid (in mm)
+$grd_run_mean									# writegrid for this grid
+$outpath//$soil_grd//suz.grd 					# (new) storage grid for unsat. zone
+$grd_run_mean									# writegrid for this grid
+$outpath//$soil_grd//sif.grd 					# (new) storage grid for interflow storage
+$grd_run_mean									# writegrid for this grid
+$outpath//$soil_grd//sbia.grd 					# (new) grid for soil moisture in the inaktive soil storage
+$grd_run_mean 									# Writegrid for inaktive soil moisture
+$outpath//$soil_grd//nfki.grd 					# (new) grid for plant available field capacity in the inaktiven soil storage
+$grd_run_mean 									# writegrid for this grid
+$outpath//$soil_grd//ssp.grd 					# (new) grid for the relative fraction of the soil storages, which is in contact with ground water
+$grd_run_mean 									# writegrid for this grid
+$outpath//$soil_grd//qd.grd 					# (new) grid for surface runoff
+$grd_run_mean									# writegrid for this grid
+$outpath//$soil_grd//qifl.grd 					# (new) grid for Interflow
+$grd_run_mean 									# writegrid for this grid
+$outpath//$soil_grd//peak.grd 					# (new) grid for Peakflow (maximum peakflow for the entire model time)
+$outpath//$oc_s//qdir.stat		$day_sum 		# statistic of surface discharge
+$outpath//$oc_s//qifl.stat 		$day_sum 		# statistic of interflow
+$outpath//$oc_s//qbas.stat	 	$day_sum  		# statistic of base flow
+$outpath//$oc_s//qbav.stat 		$day_sum	  	# statistic of slow base flow
+$outpath//$oc_s//qges.stat 		$day_sum	  	# statistic of total discharge
+$outpath//$oc_s//sb.stat		$day_mean  		# soil storage in mm per zone
+$outpath//$oc_s//suz.stat		$day_mean  		# drainage storage in mm per zone
+$outpath//$oc_s//sifl.stat 		$day_mean  		# interflow storage in mm per zone
+$outpath//$oc_s//sd.stat 		$day_mean  	 	# saturation deficite per zone in mm
+1			2			3			4			5			6				# Codes der Teilgebiete im Zonengrid
+$m_s		$m_s		$m_s		$m_s		$m_s		$m_s			# m 		# recession parameter m for Topmodel approach in m
+$T_korr		$T_korr		$T_korr		$T_korr		$T_korr		$T_korr			# T_korr 	# correction factvor for transimissivities
+$K_korr		$K_korr		$K_korr		$K_korr		$K_korr		$K_korr			# K_korr 	# correction factor for Ks (vertical)
+$K_D		$K_D		$K_D		$K_D		$K_D		$K_D			# K_D 		# SLR storage coefficient direct runoff in h
+$SH_max		$SH_max		$SH_max		$SH_max		$SH_max		$SH_max	 		# SH_max	# threshold of saturation deficit for interflow generation !!!! ? Maximum content of the interflow storage?
+$K_I		$K_I		$K_I		$K_I		$K_I		$K_I			# (k_I) 	# SLR storage coefficient interfow in h
+$K_B		$K_B		$K_B		$K_B		$K_B		$K_B 			# (k_B) 	# SLR storage coefficient slow base flow in h
+$mDP		$mDP		$mDP		$mDP		$mDP		$mDP 			# maximum deep percolation (for slow base flow) at saturation in mm/h
+$SB_ini		$SB_ini		$SB_ini		$SB_ini		$SB_ini		$SB_ini 		# initial value slow base flow QBB
+$SUZ_ini	$SUZ_ini	$SUZ_ini	$SUZ_ini	$SUZ_ini	$SUZ_ini		# SUZ_ini		# initial value SUZ-storage in n*nFK (nFK = useable field capacity in mm)
+$nFK_s		$nFK_s		$nFK_s		$nFK_s		$nFK_s		$nFK_s			# Sm			# useable field capacity in n*nFK, # inital saturation deficit? Sm
+$P_limit	$P_limit	$P_limit	$P_limit	$P_limit	$P_limit 		# P_limit? 		# threshold for macro pore runoff # Pgrez?
+$rk			$rk			$rk			$rk			$rk			$rk 			# rk [0-1]		# reduction factor for re-loading the soil storage from interflow and groundwater storages (compensating evaporation losses at high groundwater or filled interflow storage)
+$cmelt		$cmelt		$cmelt		$cmelt		$cmelt		$cmelt	 		# cmelt [0-1]	# fraction of snow melt which is not infiltrating but part of direct runoff
+0 #$readgrids 								# 1=read grids from disk, else generate internal
+$outpath//storage_topmodel.ftz 				# if readgrids = 1, then this file contains the contents of the flow travel time zones for interflow and surface flow and for the tracers
+
+#--------------------------------------
+# Parameters for the routing model
+#--------------------------------------
+$set $oc_rout = STAT//$sep//routing//$sep
+
+#--------------------------------------
+
+[routing_model]
+1                    					# 0=ignore this module, 1 = run the module, 2=run the module with observed inflows into the routing channels (from discharge files)
+$time
+0.0009 0.6985 480 4         			# minimum/maximum specific discharge (l/s/km^2), number of log. fractions of the range, splitting of the timeintervall (24= 1 hour-intervalls are splitted into 24 Intervalls each of 2.5 min. duration)
+$outpath//$oc_rout//qgko.stat  $routing_code  
+$inpath_hydro//fundus_25-qh.txt
+1	 									# number of following column descripotr (which column in the spec. disch. file corresponds to which subbasin
+1	1	 								# first number: subbasin, second: column index	
+0	      								#  timeoffset 
+TG 4 (AE=6.750, AErel=1.0)
+ from OL  5 (kh=0.1, kv=0.4, Bh= 1.9, Bv=  7.6, Th= 0.30, Mh=20.0, Mv= 8.0, I=0.0243, L=527.2, AE=3.307)
+TG 3 (AE=8.560, AErel=1.0)
+ from OL  4 (kh=0.1, kv=0.4, Bh= 1.6, Bv=  6.3, Th= 0.40, Mh=20.0, Mv= 8.0, I=0.0661, L=1119.1, AE=6.750)
+TG 2 (AE=12.889, AErel=1.0)
+ from OL  3 (kh=0.1, kv=0.4, Bh= 1.2, Bv=  4.9, Th= 0.46, Mh=20.0, Mv= 8.0, I=0.1385, L=2425.4, AE=8.560)
+TG 1 (AE=14.135, AErel=1.0)
+ from OL  2 (kh=0.1, kv=0.4, Bh= 1.2, Bv=  4.6, Th= 0.55, Mh=20.0, Mv= 8.0, I=0.2240, L=898.2, AE=12.889)
+# values taken from TANALYSIS and not from Field data!
+
+# declaring some common variables for vegetation period dependent grid-writing
+# default (if not used in land use table at all) is JDVegReset = 1 and JDVegWrite = 365
+$set $JDVegReset = 1
+$set $JDVegWrite = 365
+
+[multilayer_landuse]
+9 # count of multilayer landuses
+2 sparseVegetation { Landuse_Layers = 2;	k_extinct = 0.3; LAI_scale = 20;}
+3 naturalGrasland { Landuse_Layers = 3;	k_extinct = 0.3; LAI_scale = 20;}
+4 shrubs { Landuse_Layers = 4;	k_extinct = 0.3; LAI_scale = 20;}
+5 denseForrest { Landuse_Layers = 5;	k_extinct = 0.3; LAI_scale = 20;}
+6 openForrest { Landuse_Layers = 6;	k_extinct = 0.3; LAI_scale = 20;}
+7 bareRock { Landuse_Layers = 7;	k_extinct = 0.3; LAI_scale = 20;}
+8 water	{ Landuse_Layers = 8;	k_extinct = 0.3; LAI_scale = 20;}
+9 firn { Landuse_Layers = 9;	k_extinct = 0.3; LAI_scale = 20;}
+10 ice { Landuse_Layers = 10;	k_extinct = 0.3; LAI_scale = 20;}
+
+[landuse_table]
+9
+2  spaerliche_Vegetation {method  = VariableDayCount;
+	        RootDistr        = 1.0;
+	        TReduWet         = 0.95;
+	        LimitReduWet     = 0.5;
+	        HReduDry         = 3.5;
+	        IntercepCap      = 0.2;
+	        JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+	        Albedo           = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        rsc              = 90    90    80    60    50    45     45     45     50     60     90     90   ;
+	        rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        rs_evaporation   = 100   100   100   100   100   100    100    100    100    100    100    100  ;
+	        LAI              = 1     1     1     1.5   1.5   2      2      2      1.5    1.5    1      1    ;
+	        Z0               = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        VCF              = 0.2   0.2   0.2   0.2   0.4   0.4    0.4    0.4    0.3    0.2    0.2    0.2  ;
+	        RootDepth        = 0.4   0.4   0.4   0.4   0.4   0.4    0.4    0.4    0.4    0.4    0.4    0.4  ;
+	        AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+	        }
+3  Extensiv-Gruenland {method  = VariableDayCount;
+			RootDistr        = 1.0;
+			TReduWet         = 0.95;
+			LimitReduWet     = 0.5;
+			HReduDry         = 3.5;
+			IntercepCap      = 0.4;
+			JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+			Albedo           = 0.25  0.25  0.25  0.25  0.25  0.25   0.25   0.25   0.25   0.25   0.25   0.25 ;
+			rsc              = 90    90    80    60    50    45     40     45     50     60     90     90   ;
+			rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+			rs_evaporation   = 200   200   200   200   200   200    200    200    200    200    200    200  ;
+			LAI              = 2     2     2     2     3     3      3      3      3      2      2      2    ;
+			Z0               = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2 ;
+			VCF              = 0.9   0.9   0.9   0.95  1.0   1.0    1.0    1.0    0.95   0.9    0.9    0.9  ;
+			RootDepth        = 0.4   0.4   0.4   0.4   0.4   0.4    0.4    0.4    0.4    0.4    0.4    0.4  ;
+			AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+			}
+4  Busch-Kraut-Vegetation_mitteldicht {method  = VariableDayCount;
+	        RootDistr        = 1.0;
+	        TReduWet         = 0.95;
+	        LimitReduWet     = 0.5;
+	        HReduDry         = 3.5;
+	        IntercepCap      = 0.6;
+	        JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+	        Albedo           = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        rsc              = 80    80    70    60    50    40     40     50     50     60     70     80   ;
+	        rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        rs_evaporation   = 200   200   200   200   200   200    200    200    200    200    200    200 ;
+	        LAI              = 3     3     3     4     5     5      4      4      3      3      3      3    ;
+	        Z0               = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        VCF              = 0.9   0.9   0.9   0.9   0.95  0.95   0.95   0.95   0.95   0.9    0.9    0.9  ;
+	        RootDepth        = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+	        }
+5  Nadelwald {method  = VariableDayCount;
+			RootDistr        = 1.0;
+			TReduWet         = 0.95;
+			LimitReduWet     = 0.5;
+			HReduDry         = 3.5;
+			IntercepCap      = 0.6;
+			JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+			Albedo           = 0.12  0.12  0.12  0.12  0.12  0.12   0.12   0.12   0.12   0.12   0.12   0.12 ;
+			rsc              = 80    80    75    55    40    40     40     40     45     65     80     80   ;
+			rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+			rs_evaporation   = 200   200   200   200   200   200    200    200    200    200    200    200 ;
+			LAI              = 6     6     8     8     10    10     10     10     8      8      6      6    ;
+			Z0               = 3     3     3     3     3     3      3      3      3      3      3      3    ;
+			VCF              = 0.9   0.9   0.9   0.9   0.95  0.95   0.95   0.95   0.95   0.9    0.9    0.9  ;
+			RootDepth        = 1.2   1.2   1.2   1.2   1.2   1.2    1.2    1.2    1.2    1.2    1.2    1.2  ;
+			AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+			}
+6  locker_baumbestanden {method  = VariableDayCount;
+	        RootDistr        = 1.0;
+	        TReduWet         = 0.95;
+	        LimitReduWet     = 0.5;
+	        HReduDry         = 3.5;
+	        IntercepCap      = 0.5;
+	        JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+	        Albedo           = 0.15  0.15  0.15  0.15  0.15  0.15   0.15   0.15   0.15   0.15   0.15   0.15 ;
+	        rsc              = 90    90    85    60    45    45     45     45     50     70     90     90   ;
+	        rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        rs_evaporation   = 200   200   200   200   200   200    200    200    200    200    200    200 ;
+	        LAI              = 2.5   2.5   2.5   3.5   4.0   4.0    4.0    4.0    3.5    2.5    2.5    2.5  ;
+	        Z0               = 2.5   2.5   2.5   2.5   2.5   2.5    2.5    2.5    2.5    2.5    2.5    2.5  ;
+	        VCF              = 0.4   0.4   0.4   0.4   0.8   0.9    0.9    0.9    0.7    0.4    0.4    0.4  ;
+	        RootDepth        = 1.3   1.3   1.3   1.3   1.3   1.3    1.3    1.3    1.3    1.3    1.3    1.3  ;
+	        AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+	        }
+7  vegetationslose_Flaechen {method  = VariableDayCount;
+	        RootDistr        = 1.0;
+	        TReduWet         = 0.95;
+	        LimitReduWet     = 0.5;
+	        HReduDry         = 3.5;
+	        IntercepCap      = 0.2;
+	        JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349  ;
+	        Albedo           = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        rsc              = 100   100   100   100   100   100    100    100    100    100    100    100  ;
+	        rs_interception  = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        rs_evaporation   = 100   100   100   100   100   100    100    100    100    100    100    100  ;
+	        LAI              = 0.5   0.5   0.5   0.5   0.5   0.5    0.5    0.5    0.5    0.5    0.5    0.5  ;
+	        Z0               = 0.1   0.1   0.1   0.1   0.1   0.1    0.1    0.1    0.1    0.1    0.1    0.1 ;
+	        VCF              = 0.2   0.2   0.2   0.2   0.2   0.2    0.2    0.2    0.2    0.2    0.2    0.2  ;
+	        RootDepth        = 0.1   0.1   0.1   0.1   0.1   0.1    0.1    0.1    0.1    0.1    0.1    0.1  ;
+	        AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025;
+	        }
+8 water    { method           = VariableDayCount;	# valid methods: "VariableDayCount" with variable number of fix points (other methods will follow) --> old method: if the table is structured like the old ones, they are still valid
+			 RootDistr        = 1.0;		# parameter for root density distribution
+			 TReduWet         = 0.95;		# relative Theta value for beginning water stress (under wet conditions -> set >= 1 for crop which doesn't depend on an aeral zone
+			 LimitReduWet     = 0.5;		# minimum relative reduction factor of real transpiration when water content reaches saturation. The reduction factor value will go down linearly starting at 1.0 when relative Theta equals TReduWet (e.g. 0.95) to LimitReduWet when the soil is saturated (Theta rel = 1.0)
+			 HReduDry         = 3.45;		# hydraulic head (suction) for beginning dryness stress (for water content resulting in higher suctions, ETR will be reduced down to 0 at suction=150m)
+			 IntercepCap      = 0; 		    # optional: specific thickness of the water layer on the leafes in mm. if omitted here, the dedfault parameter from interception_model is used
+			 JulDays          = 15    46    74    105   135   166    196    227    258    288    319    349 ;  # Julian days for all following rows. Each parameter must match the number of julian days given here! The count of days doesn't matter. The count of days doesn't matter.
+			 Albedo           = 0.05  0.05  0.05  0.05  0.05  0.05   0.05   0.05   0.05   0.05   0.05   0.05;  # Albedo (snow free)
+			 rsc              = 20    20    20    20    20    20     20     20     20     20     20     20;    # leaf surface resistance in s/m
+			 rs_interception  = 20    20    20    20    20    20     20     20     20     20     20     20;    # INTERCEPTION surface resistance in s/m
+			 LAI              = 1.0   1.0   1.0   1.0   1.0   1.0    1.0    1.0    1.0    1.0    1.0    1.0;   # Leaf Area Index (1/1)
+			 Z0               = 0.01  0.01  0.01  0.01  0.01  0.01   0.01   0.01   0.01   0.01   0.01   0.01;  # Roughness length in m
+			 VCF              = 0.1   0.1   0.1   0.1   0.1   0.1    0.1    0.1    0.1    0.1    0.1    0.1;   # Vegetation covered fraction ("Vegetationsbedeckungsgrad")
+			 RootDepth        = 0.01  0.01  0.01  0.01  0.01  0.01   0.01   0.01   0.01   0.01   0.01   0.01;  # Root depth in m
+			 AltDep           = 0.025 0.025 0.025 0.025 0.025 0.025 -0.025 -0.025 -0.025 -0.025 -0.025 -0.025; # Verschiebung des Juldays pro Meter (positiv: wird nach hinten geschoben, negativ: wird nach vorne geschoben -> Limit: Wenn zwei Punkte aufeinandertreffen, dann wird nicht weiter verschoben)
+		   }
+9  Firnflaechen  {method  = VariableDayCount;
+		RootDistr 	= 1;	
+		TReduWet 	= 1;	
+		LimitReduWet 	= 1;	
+		HReduDry 	= 150;	
+		IntercepCap 	= 0; 	
+		JulDays  	= 365;  
+		Albedo 		= 0.60;
+ 		rsc 		= 100;    
+		rs_interception = 0;
+		rs_evaporation 	= 400;
+		LAI 		= 1.0;
+		Z0 		= 0.05;
+		VCF  		= 1.0;
+		RootDepth  	= 0.1;
+		AltDep  	= 0;
+	        }
+10  Eisflaechen  {method  = VariableDayCount;
+		RootDistr 	= 1;	
+		TReduWet 	= 1;	
+		LimitReduWet 	= 1;	
+		HReduDry 	= 150;	
+		IntercepCap 	= 0; 	
+		JulDays  	= 365;  
+		Albedo 		= 0.38;
+ 		rsc 		= 100;    
+		rs_interception = 0;
+		rs_evaporation 	= 400;
+		LAI 		= 1.0;
+		Z0 		= 0.05;
+		VCF  		= 1.0;
+		RootDepth  	= 0.1;
+		AltDep  	= 0;
+	        }
+
+		
+	
+#----------------------------------		
+# 1x
+
+$set $9e4 = 9.00e-4				
+$set $8e4 = 8.00e-4				
+$set $7e4 = 7.00e-4				
+$set $6e4 = 6.00e-4				
+$set $5e4 = 5.00e-4				
+$set $4e4 = 4.00e-4				
+$set $3e4 = 3.00e-4				
+$set $2e4 = 2.00e-4				
+$set $1e4 = 1.00e-4				
+
+$set $9e5 = 9.00e-5				
+$set $8e5 = 8.00e-5				
+$set $7e5 = 7.00e-5				
+$set $6e5 = 6.00e-5				
+$set $5e5 = 5.00e-5				
+$set $4e5 = 4.00e-5				
+$set $35e5 = 3.50e-5
+$set $3e5 = 3.00e-5				
+$set $2e5 = 2.00e-5				
+$set $1e5 = 1.00e-5				
+
+$set $9e6 = 9.00e-6				
+$set $8e6 = 8.00e-6				
+$set $7e6 = 7.00e-6				
+$set $6e6 = 6.00e-6				
+$set $5e6 = 5.00e-6				
+$set $4e6 = 4.00e-6				
+$set $3e6 = 3.00e-6				
+$set $2e6 = 2.00e-6				
+$set $1e6 = 1.00e-6				
+
+$set $9e7 = 9.00e-7				
+$set $8e7 = 8.00e-7				
+$set $7e7 = 7.00e-7				
+$set $6e7 = 6.00e-7				
+$set $5e7 = 5.00e-7				
+$set $4e7 = 4.00e-7				
+$set $3e7 = 3.00e-7				
+$set $2e7 = 2.00e-7				
+$set $1e7 = 1.00e-7				
+
+$set $9e8 = 9.00e-8				
+$set $8e8 = 8.00e-8				
+$set $7e8 = 7.00e-8				
+$set $6e8 = 6.00e-8				
+$set $5e8 = 5.00e-8				
+$set $4e8 = 4.00e-8				
+$set $3e8 = 3.00e-8				
+$set $2e8 = 2.00e-8				
+$set $1e8 = 1.00e-8				
+
+$set $9e9 = 9.00e-9			
+$set $8e9 = 8.00e-9			
+$set $7e9 = 7.00e-9			
+$set $6e9 = 6.00e-9			
+$set $5e9 = 5.00e-9			
+$set $4e9 = 4.00e-9			
+$set $3e9 = 3.00e-9			
+$set $2e9 = 2.00e-9			
+$set $1e9 = 1.00e-9			
+
+#----------------------------------
+
+[soil_table]
+5
+#co- name of the 	# van Genuchten Parameter nach Carsel & Parrish (1988)
+#de  soil profile
+#-- ---------------
+430001	sandy_clay_(SC) {method = MultipleHorizons;
+Fcap = 19.43;
+            MSB = 28.0;
+            ksat = $3e7;
+            Suction= 280;
+			ThicknessScaling=1.0;
+ 	# AE = 0.28 %		
+			 PMacroThresh   = 0 ;  
+			 MacroCapacity  = 0 ; 
+			 CapacityRedu   = 0 ;   
+			 MacroDepth     = 0 ;  
+				 horizon   		= 1       ;  	
+			 	 Name			= SC	  ;	
+		   		 k_recession    = 0.8     ;  	
+				 theta_sat 		= 0.38    ;	
+				 theta_res 		= 0.100   ;	
+				 alpha     		= 2.70 	  ;	
+				 Par_n     		= 1.23    ;	
+				 Par_tau		= 0.5	  ;  	
+				 thickness 		= 4.00    ;
+				 layers    		= 3      ;
+				}
+430014	loam_(L) {method = MultipleHorizons;
+			Fcap = 12.9;
+            MSB = 35.2;
+            ksat = $3e6;
+            Suction= 352;
+			ThicknessScaling=1.0;
+ 	# AE = 0.28 %		
+			 PMacroThresh   = 0 ;  
+			 MacroCapacity  = 0 ; 
+			 CapacityRedu   = 0 ;   
+			 MacroDepth     = 0 ;  
+			     horizon   		= 1       ;  	
+			     Name			= L	  	  ;  	
+		   		 k_recession    = 0.8     ;  	
+				 theta_sat 		= 0.43    ;	
+				 theta_res 		= 0.078   ;	
+				 alpha     		= 3.60 	  ;	
+				 Par_n     		= 1.56    ;	
+				 Par_tau		= 0.5	  ;  	
+				 thickness 		= 3.00    ;
+				 layers    		= 3      ;
+				}
+430019	silty_clay_loam_(SICL) {method = MultipleHorizons;
+            Fcap = 28.16;
+            MSB = 34.1;
+            ksat = $2e7;
+            Suction= 341;
+			ThicknessScaling=1.0;
+ 	# AE = 0.28 %		
+			 PMacroThresh   = 0 ;  
+			 MacroCapacity  = 0 ; 
+			 CapacityRedu   = 0 ;   
+			 MacroDepth     = 0 ;  
+				 horizon   		= 1       ;  	
+			 	 Name			= SIC	  ;  	
+		   		 k_recession    = 0.8     ;  	
+				 theta_sat 		= 0.36    ;	
+				 theta_res 		= 0.070   ;	
+				 alpha     		= 0.5 	  ;	
+				 Par_n     		= 1.09    ;	
+				 Par_tau		= 0.5	  ;  	
+				 thickness 		= 3.00    ;
+				 layers    		= 3      ;
+				}
+430018	sandy_clay_loam_(SCL) {method = MultipleHorizons;
+			Fcap = 13.35;
+            MSB = 29.0;
+            ksat = $2e7;
+            Suction= 290;
+			ThicknessScaling=1.0;
+ 	# AE = 0.28 %		
+			 PMacroThresh   = 0 ;  
+			 MacroCapacity  = 0 ; 
+			 CapacityRedu   = 0 ;   
+			 MacroDepth     = 0 ;  
+				 horizon   		= 1       ;  	
+			 	 Name			= SC	  ;  	
+		   		 k_recession    = 0.8     ;  	
+				 theta_sat 		= 0.38    ;	
+				 theta_res 		= 0.100   ;	
+				 alpha     		= 2.70 	  ;	
+				 Par_n     		= 1.23    ;	
+				 Par_tau		= 0.5	  ;  	
+				 thickness 		= 1.00    ;
+				 layers    		= 3      ;
+				}
+430009	Felsflaechen {method = MultipleHorizons;
+			Fcap = 10.0;
+            MSB = 15.0;
+            ksat = $35e5;
+            Suction= 385;
+			ThicknessScaling=1.0;
+ 			# AE = 37 %		
+			PMacroThresh   = 0 ;  
+			MacroCapacity  = 0 ; 
+			CapacityRedu   = 0 ;   
+			MacroDepth     = 0 ;  
+				 horizon   		= 1	 	 ;  	
+			 	 Name			=  R	 ;  	
+				 ksat      		= $3e5   ;
+		   		 k_recession    = 0.8    ;  	
+				 theta_sat 		= 0.43   ;	
+				 theta_res 		= 0.045  ;	
+				 alpha     		= 14.50	 ;	
+				 Par_n     		= 2.67   ;	
+				 Par_tau		= 0.5	 ;  	
+				 thickness 		= 2.00   ;
+				 layers    		= 3     ;
+				}
+
+
+	
+################################################################################
+################# NOT USED PARTS ###############################################
+
+[LayeredSnowModel]
+0               
+
+# [LayeredSnowProperties]
+
+
+# [permafrost]
+
+
+[SiltingUpModel]
+0                            
+
+[lake_model]
+0                            
+
+[unsatzon_model]
+0	
+
+[unsatzon_tuning]
+maxerror = 1e-5
+max_iterations = 100
+
+# the following section for heat transfer can be used with WaSiM version 9.0 ff
+[heat_transfer]
+0
+
+[ExternalCoupling]
+0 				
+
+[irrigation]
+0
+[groundwater_flow]
+0
+
+[substance_transport]
+0
+
+[irrigation_table]
+0                  
+
+[special_output]
+0 
+$time # duration of a time step in minutes --> only for compatibility here.
+numfiles = 0;
+
+[data_assimilation]
+0 
+$time # the general model time step
+0 # rule count
