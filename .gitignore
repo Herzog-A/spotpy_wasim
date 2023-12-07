@@ -34,5 +34,6 @@ __pycache__
 *.intern
 *Diag*
 
+*.csv
 
 !**/.keep
