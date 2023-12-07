@@ -45,7 +45,7 @@ class spot_setup(object):
         self.exe = "wasimvc64.exe"
         
         # TODO: set the path and file name for the observation data
-        self.WASIM_obs_file = "wasim_mod"+os.sep + "input"+os.sep+"hydro"+os.sep+"fundus-qh_all.txt"
+        self.WASIM_obs_file = "wasim_mod"+os.sep + "input"+os.sep+"hydro"+os.sep+"fundus_qd_calib.txt"
 
         # identify model_time
         # TODO set timestep size ("D" for daily, "H" for hourly)
@@ -54,7 +54,7 @@ class spot_setup(object):
         # Reading Observation data for specified gauges
         # TODO: define the gauges used for evalution (objective function calculation)
         #       and the corresponding subbasins
-        self.gauge = "Fundus 1989"
+        self.gauge = "Fundus_1989"
                                    
 
         # generate pandas data frame with valid observation data and time steps at
@@ -138,9 +138,9 @@ class spot_setup(object):
 
         # check if the simulation results cover to whole time range or weather there
         # if not set whole time series to NA to account for invalid simulation
-        if len(simulation[0]) < len(self.time_range):
-            for i in range(0, len(simulation)):
-                simulation[i] = np.full((len(self.time_range)), -9999)
+        if simulation.shape[0] < len(self.time_range):
+            for i in range(0, simulation.shape[0]):
+                simulation = np.full((len(self.time_range)), -9999)
             print("simulation results NOT VALID")
         else: print("simulation results valid")
         
@@ -168,7 +168,7 @@ class spot_setup(object):
         
         # create pandas df from simulation data, and include time column
         sim = pd.DataFrame({'time': self.time_range, 
-                            "sim" : simulation}).set_index("time")
+                            "sim" : simulation})
         
         # merge observation data and simulation data by valid observation time
         # stepts to have same length of time series
