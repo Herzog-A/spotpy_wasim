@@ -58,3 +58,6 @@ The Data has to be provided in the WaSiM typical statistical data format. (1st r
 The timeseris must be at least as long as the simuluation period, the overlapping period is selected automatically. Non valid observations must be formatted as -9999.
 The location of the file has to be defined in the `__init__()` section of the setup script.
 
+# environment configuration
+The spotpy_environment.yml contains the conda environment used at the linux cluster. Additionally to that modules for netCDF, OpenMPI and Conda have to be loaded (see <spotpy.job> file).
+ 
