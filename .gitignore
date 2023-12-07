@@ -21,6 +21,7 @@ tools
 
 # keep files
 !fundus-qh_all.txt
+!fundus_qd_calib.txt
 !parameter_ranges.txt
 
 # all core files in case there are some
