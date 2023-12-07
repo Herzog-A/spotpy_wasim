@@ -28,7 +28,7 @@ If you want to evaluate the routed discharge, the name of the output file should
 
 ## SPOTPY structure
 The SPOTPY framework is sturctured in 3 different scripts. 
-The <spot_WASIM_setup.py> script is the central part of the coupling. In this scirpt some variables must be defined for the coupling to work. This includes 
+The `spot_WASIM_setup.py` script is the central part of the coupling. In this scirpt some variables must be defined for the coupling to work. This includes 
 
 -- the control file name
 -- the executalble name
@@ -36,15 +36,15 @@ The <spot_WASIM_setup.py> script is the central part of the coupling. In this sc
 -- the gauge used for evaluation (column name in obs file)
 -- the subbasin used for evaluation
 
-The <spot_WASIM_function.py> script includes all functions required by the <spot_WASIM_setup.py> script. It must be located in the same folder.
+The `spot_WASIM_function.py` script includes all functions required by the `spot_WASIM_setup.py` script. It must be located in the same folder.
 
-In order to start a SPOTPY analysis the <spot_WASIM_run.py> script has be executed. Again a few adaptions have to be made.
+In order to start a SPOTPY analysis the `spot_WASIM_run.py` script has be executed. Again a few adaptions have to be made.
 
 -- parallel : define whether to run in sequential ("seq") order or parallel ("mpi")
 -- dbname:    define the name of the output data base
 -- rep:       define the number of repetitions 
 
-within the <spot_setup()> function define the timestep as "D" for daily or "H" for hourly. If no timestep or run mode is provided, the algorithm assums daily timesteps and sequential running. 
+within the `spot_setup()` function define the timestep as "D" for daily or "H" for hourly. If no timestep or run mode is provided, the algorithm assums daily timesteps and sequential running. 
 
 # Additional files
     
@@ -59,5 +59,5 @@ The timeseris must be at least as long as the simuluation period, the overlappin
 The location of the file has to be defined in the `__init__()` section of the setup script.
 
 # environment configuration
-The spotpy_environment.yml contains the conda environment used at the linux cluster. Additionally to that modules for netCDF, OpenMPI and Conda have to be loaded (see <spotpy.job> file).
+The spotpy_environment.yml contains the conda environment used at the linux cluster. Additionally to that modules for netCDF, OpenMPI and Conda have to be loaded (see `spotpy.job` file).
  
