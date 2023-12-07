@@ -2,8 +2,8 @@
 # == all manual changes in this section will be overwritten by the module adapter ==
 
 $set $runID = 001
-$set $startyear  = 2013
-$set $endyear    = 2014
+$set $startyear  = 2014
+$set $endyear    = 2015
 
 $set $DefaultOutputDirectory 	= .\output\
 $set $inpath_grid    			= .\input\grids\GRD\
@@ -402,11 +402,11 @@ temperature {
 #--------------------------------------
 # Parameters for precipitation correction
 #--------------------------------------
-$set $SRT = 0.9089418288664823 
+$set $SRT = 0.9285101041525196 
 $set $Bl = 1.04
 $set $Al = 0.1
-$set $Bs = 1.055470893495477 
-$set $As = 0.19096590617296963 
+$set $Bs = 1.4587648734180951 
+$set $As = 0.1931274789030159 
 #--------------------------------------
 
 [precipitation_correction]
@@ -420,7 +420,7 @@ $As                   # Snow:     a in:  y = p(ax + b) = 15% more per m/s + 45% 
 #--------------------------------------
 # Parameters for the radiation correction
 #--------------------------------------
-$set $scTR = 3.5131837697095145 
+$set $scTR = 3.1137669887227633 
 #--------------------------------------
 
 [radiation_correction]
@@ -491,11 +491,11 @@ $set $snow_grd		= GRD//$sep//snow//$sep
 # Parameters for the snow model 
 #--------------------------------------
 
-$set $T0Z = 1.819337998465812 
-$set $T0R = 1.0172468200400053 
-$set $T0M = 1.0194731761660714 
-$set $CWH = 0.4548932212263287 
-$set $RFC = 0.13101115685289838 
+$set $T0Z = 1.8626849667259282 
+$set $T0R = 2.3626183032712875 
+$set $T0M = 2.362687028482257 
+$set $CWH = 0.028899158685925568 
+$set $RFC = 0.02870864915178657 
 $set $DDF = 1.87
 #--------------------------------------
 
@@ -575,17 +575,17 @@ $set $glc_grd       = GRD//$sep//glacier//$sep
 # Parameters for the glacier model 
 #--------------------------------------
 
-$set $TI_ice = 1.0352456787047082 
-$set $TI_firn = 1.8829181440016862 
-$set $TI_snow = 1.882827803063416 
-$set $MF = 0.9539198718031184 
+$set $TI_ice = 1.9106572257392065 
+$set $TI_firn = 0.776777892186712 
+$set $TI_snow = 0.7739485426697962 
+$set $MF = 0.529327980191968 
 $set $RCice_min = 0.00046 
 $set $RCice_max = 0.00034 
 $set $RCsnow_min = 0.00036
 $set $RCsnow_max = 0.00061
-$set $ELS_ice = 25.85362160316897 
-$set $ELS_firn = 141.00204254827773 
-$set $ELS_snow = 38.74631275312779 
+$set $ELS_ice = 93.04048858545248 
+$set $ELS_firn = 143.14122394520984 
+$set $ELS_snow = 8.631551387299307 
 $set $ice_ini = 0.7
 $set $firn_ini = 0.4
 $set $snow_ini = 0.4
@@ -657,7 +657,7 @@ $set $int_grd       = GRD//$sep//interception//$sep
 # Parameters for the interception model 
 #--------------------------------------
 
-$set $SC_leaves = 0.9106347438630156 
+$set $SC_leaves = 0.9312094518993486 
 #--------------------------------------
 
 [interception_model]
@@ -734,7 +734,7 @@ $set $infl_grd      = GRD//$sep//infiltration//$sep
 # Parameters for the infiltration model
 #--------------------------------------
 
-$set $rin = 0.4550056956944752 
+$set $rin = 0.46381003224503564 
 #--------------------------------------
 
 [infiltration_model]
@@ -790,20 +790,20 @@ $set $soil_grd      = GRD//$sep//soil//$sep
 # Parameters for the soil model
 #--------------------------------------
 
-$set $m_s = 0.025157625826226278 
+$set $m_s = 0.038625495780603175 
 $set $T_korr = 0.00 
-$set $K_korr = 2819.318123459392 
-$set $K_D = 39.43173359247266 
-$set $SH_max = 45.48955539364377 
-$set $K_I = 166.56606418617335 
+$set $K_korr = 2862.549578060318 
+$set $K_D = 139.76131806971307 
+$set $SH_max = 46.63452641880688 
+$set $K_I = 468.272958175384 
 $set $K_B = 722.66
-$set $mDP = 0.33183528088887126 
-$set $SB_ini = 0.257803744866214 
-$set $SUZ_ini = 0.9087748788125588 
-$set $nFK_s = 0.5539198718031184 
-$set $P_limit = 13.138963739432963 
-$set $rk = 0.25843713822412173 
-$set $cmelt = 0.2644703228278285 
+$set $mDP = 0.9372847605490826 
+$set $SB_ini = 0.9295235742938697 
+$set $SUZ_ini = 0.9313971199056851 
+$set $nFK_s = 0.5656373945150794 
+$set $P_limit = 46.5779655701787 
+$set $rk = 0.9304369805280477 
+$set $cmelt = 0.21422087359034542 
 
 #--------------------------------------
 
