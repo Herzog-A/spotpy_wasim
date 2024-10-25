@@ -14,16 +14,16 @@ from distutils.dir_util import remove_tree
 def main(): 
     
     # TODO: Set to mpi if parallel running is wanted
-    parallel = "seq"
+    parallel = "mpi"
     # TODO: Give a name to the spotpy database to store the csv results
     dbname = "LHS_WASIM"
     # TODO: Select number of maximum repetitions
-    rep = 2
+    rep = 5
     
     # Initialization of SPOTPY setup
     # TODO default run mode (r_mode) is "seq", change to "mpi" for parallel processing
     # TODO default time step (tstep) is daily ("D"), change to "H" for hourly
-    setup = spot_setup(r_mode= parallel, tstep = "D")
+    setup = spot_setup(r_mode= parallel, tstep = "H", sys="linux")
     
     # TODO define algorithm 
     sampler = spotpy.algorithms.lhs(
