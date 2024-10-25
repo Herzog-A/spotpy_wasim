@@ -48,17 +48,14 @@ class spot_setup(object):
 
         # TODO: Set the name of the WaSiM control file
         self.ctrl_name = "fundus_25.ctrl"
-        
-        # TODO: set the path and file name for the observation data
-        self.WASIM_obs_file = self.mod_dict+os.sep + "input"+os.sep+"hydro"+os.sep+"fundus-qh_all.txt"
 
         # identify model_time
         # TODO set timestep size ("D" for daily, "H" for hourly)
         self.time_range = fun.model_time(self.mod_dict + os.sep + self.ctrl_name, tstep)
 
         # TODO definition of calibration periods
-        self.calibration_range =pd.date_range(start = dt.strptime("2018/01/01 00:00", '%Y/%m/%d %H:%M'),
-                                              end = dt.strptime("2018/01/09 23:00", '%Y/%m/%d %H:%M'),
+        self.calibration_range =pd.date_range(start = dt.strptime("2018/02/01 00:00", '%Y/%m/%d %H:%M'),
+                                              end = dt.strptime("2018/12/31 23:00", '%Y/%m/%d %H:%M'),
                                               freq = tstep,
                                               tz= None)
 
