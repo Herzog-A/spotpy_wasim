@@ -14,15 +14,18 @@ used to couple the WaSiM-ETH model with SPOTPY
 import pandas as pd
 import spotpy
 import os
+import subprocess
 import numpy as np
 from datetime import datetime as dt
+import xarray
 
 """
 Function to get parameter boundries 
 I:  file name of parameter definitions [str]
         ATTENTION:  Text file with three columns ("par" = parameter name (as in Control file!),
                                                  "min" = lower boundry, 
-                                                 "max" = upper boundry), 
+                                                 "max" = upper boundry,
+                                                 (optional: "opt" = optimal guess)), 
                     with header, sperated by ";"
 O:  List with two entries   1. : List with SPOTPY Parameter definitions
                             2. : List with corresponding Parameter names [str]
@@ -33,11 +36,19 @@ def read_parameters(parfile):
     
     # create list of parameters (after SPOTPY parameter definition)
     params = []
-    for index in range(len(file)):
-        params.append(spotpy.parameter.Uniform(name = file.iloc[index].iloc[0],
-                                               low= file.iloc[index].iloc[1],
+
+    if 'opt' in file.columns:
+        for index in range(len(file)):
+            params.append(spotpy.parameter.Uniform(name = file.iloc[index]['par'],
+                                                   low= file.iloc[index]['min'],
+                                                   high=file.iloc[index]['max'],
+                                                   optguess = file.iloc[index]['opt']))
+    else:
+        for index in range(len(file)):
+            params.append(spotpy.parameter.Uniform(name = file.iloc[index]['par'],
+                                                   low= file.iloc[index]['min'],
+                                                   high=file.iloc[index]['max']))
     
-                                               high=file.iloc[index].iloc[2]))
     # extract parameter names
     parnames = list(file['par'])
         
@@ -138,8 +149,6 @@ def read_wasim_qobs(pathname, gauge, time_range, tstep):
     # filter observation to only data within the modelled time period
     q_obs = q_obs.loc[q_obs['time'].isin(time_range)]
 
-
-
     return q_obs
 
 
@@ -166,4 +175,81 @@ def read_wasim_results(filename, sb):
         
     return sim
 
+"""
+function to run WaSiM or Tanalys model based on OS
+I:  model: name of the model (wasim or tanalys) [str]
+    ctrl: name of the simulation file [str]
+    sys: opperating system (win or linux) [str]
+    max_time: max seconds until abort (optional), default 5h [int]
+O:  
+"""
+def run_model(model, ctrl, sys, max_time = 18000):
 
+    
+    if sys == "win":
+            if model== "wasim":
+                    exe = "wasimvc64.exe"
+            if model == "tanalys":
+                    exe = "tanalys64.exe"
+                    
+            run_command = "./" + exe + " ./" + ctrl
+            
+            print(model + "run follows")
+            try:
+                process = subprocess.call(run_command, timeout = max_time)
+            except subprocess.TimeoutExpired:
+                print("TIMEOUT")
+                raise Exception("timeout")
+            print("run finished")
+        
+    if sys == "linux":
+            if model =="wasim":
+                    exe = "wasimuzr-10-08-00-x86-64-pc-linux-ubuntu"
+            if model == "tanalys":
+                    exe = "tanalys"
+            
+            run_command =[ "./" + exe ,  "./" + ctrl]
+
+            print(model + " run follows")
+            try:
+                process = subprocess.run(run_command, stdout = subprocess.DEVNULL, timeout = max_time)
+            except subprocess.TimeoutExpired:
+                print("TIMEOUT")
+                raise Exception("timeout")
+            print("run finished")
+ 
+
+
+"""
+function to initialize wasim for soil parameter calibration with read in storage files
+I:  ctrl: open ctrl file with already changed parameters
+    ctrl_name: name of the ctrl file [str]
+    startyear: start year for model period [int]
+    starthour: endhour of the initilizaito (= startour +1) [str]
+O:  
+"""
+def initilize_soilstorage(self, ctrl):
+        
+        # copy output folder to initialize .fz file
+        from distutils.dir_util import copy_tree
+        copy_tree("output", "output_ini")
+
+        # configurate ctrl file for storage initialization
+        endyear = self.time_range[0].year
+        if self.tstep == "H" :
+            timeunit = "endhour"
+            endtime = str(self.time_range[0].hour +3)
+        if self.tstep == "D":
+            timeunit = "endday"
+            endtime = str(self.time_range[0].day +3)
+        
+        for par_name, par_value in zip(["readfzs", "output", "endyear", timeunit], ["0", ".//$sep//output_ini//$sep", endyear, endtime]):
+            ctrl = change_wasim_parameter(par_name, par_value, ctrl)
+        write_wasim_ctrl(self.ctrl_name + "ini", ctrl)
+
+        # run the model
+        try:
+            print("initialization run")
+            run_model("wasim", self.ctrl_name + "ini", self.sys, max_time = 60)
+        except Exception:
+            print("wasim took longer than expected during initilization run - timeout")

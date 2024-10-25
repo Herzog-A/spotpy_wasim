@@ -15,9 +15,10 @@ import spotpy
 import os
 import subprocess
 import numpy as np
-from distutils.dir_util import copy_tree
+from distutils.dir_util import copy_tree, remove_tree
+from datetime import datetime as dt
 # only needed when using parallel computing
-#from mpi4py import MPI  
+from mpi4py import MPI  
 
 
 """
@@ -25,66 +26,82 @@ Definition of the SPTOPY class
 default settings are:
         Daily timestep ("D")
         sequential processing ("seq")
+        windoes opperating system ("win")
     ATTENTION:  for modification of the standard settings call the spot_setup with 
-                with arguments eg. spot_setup(tstep = "H", r_mode = "mpi")
+                with arguments eg. spot_setup(tstep = "H", r_mode = "mpi", sys = "linux")
 """    
 class spot_setup(object):
     
     """
     Initialisation function, which will only be run once
     """
-    def __init__(self, tstep = "D", r_mode = "seq"):
+    def __init__(self, tstep = "D", r_mode = "seq", sys = "win"):
         
+        self.sys = sys 
+        self.tstep = tstep
         self.par_def = fun.read_parameters('parameter_ranges.txt')
         self.params = self.par_def[0]
         self.parnames = self.par_def[1]
 
+        # TODO: Set the path to the WASIM Project Folder
+        self.mod_dict = "wasim_mod"
+
         # TODO: Set the name of the WaSiM control file
-        self.ctrl_name = "windows_fundus_25_d.ctrl"
-        #TODO: Set the name of the executable
-        self.exe = "wasimvc64.exe"
+        self.ctrl_name = "fundus_25.ctrl"
         
         # TODO: set the path and file name for the observation data
-        self.WASIM_obs_file = "wasim_mod"+os.sep + "input"+os.sep+"hydro"+os.sep+"fundus_qd_calib.txt"
+        self.WASIM_obs_file = self.mod_dict+os.sep + "input"+os.sep+"hydro"+os.sep+"fundus-qh_all.txt"
 
         # identify model_time
         # TODO set timestep size ("D" for daily, "H" for hourly)
-        self.time_range = fun.model_time("wasim_mod"+os.sep+self.ctrl_name, tstep)
+        self.time_range = fun.model_time(self.mod_dict + os.sep + self.ctrl_name, tstep)
+
+        # TODO definition of calibration periods
+        self.calibration_range =pd.date_range(start = dt.strptime("2018/01/01 00:00", '%Y/%m/%d %H:%M'),
+                                              end = dt.strptime("2018/01/09 23:00", '%Y/%m/%d %H:%M'),
+                                              freq = tstep,
+                                              tz= None)
 
         # Reading Observation data for specified gauges
-        # TODO: define the gauges used for evalution (objective function calculation)
-        #       and the corresponding subbasins
-        self.gauge = "Fundus_1989"
-                                   
+        # TODO: define the gauges used for evaluation (objective function calculation)
+        #       and the corresponding sub basins
+        self.gauge_file = "input" + os.sep + "hydro" + os.sep + "fundus-qh_all.txt"
+        self.gauge = "Fundus 1989"
+        # TODO definition of subbasin identifier for evaluation
+        self.sb_eval = "2"                          
 
         # generate pandas data frame with valid observation data and time steps at
-        # sprcified gauge
-        self.obs = fun.read_wasim_qobs(self.WASIM_obs_file, 
-                                       self.gauge, 
-                                       self.time_range, tstep)
+        # specified gauge
+        self.obs = fun.read_wasim_qobs(self.mod_dict + os.sep + self.gauge_file,
+                                            self.gauge,
+                                            self.time_range,
+                                            tstep)
         # generate np.array of full observation data for e.g. plot of best model run
         self.full_observation = self.obs[self.gauge].values.flatten()
-        
-        # definition of subbasin identifier for evaluation
-        self.sb_eval = "2"
 
         # Set to false to reduce command line print outs
         self.verbose = True
 
         # further mpi settings
         self.parallel = r_mode
+        print("run mode: " + self.parallel)
         self.curdir = os.getcwd()
-        self.wasim_path = self.curdir + os.sep + "wasim_mod"
+        self.wasim_path = self.curdir + os.sep + self.mod_dict
+      
+        if sys == "win" :
+            self.seperator = chr(92)
+        elif sys == "linux":
+            self.seperator = "/"
 
     """
-    SPTOPY parameter function to generate parameter sets for each run based on
+    SPOTPY parameter function to generate parameter sets for each run based on
     predefined parameter ranges
     """
     def parameters(self):
         return spotpy.parameter.generate(self.params)
 
     """
-    SPOTPY simulation function to run each single simlutaion with according
+    SPOTPY simulation function to run each single simulation with according
     parameter sets
     I: Parameterset
     O: Simulation results as numpy array
@@ -98,24 +115,32 @@ class spot_setup(object):
         if self.parallel == "mpi":
             # if so, check the id of the current computation core
             call = str(MPI.COMM_WORLD.Get_rank())
-            # And generate a new folder with all underlying files
-            # to prevent reading/writing interference if it doesn't exist already
-            if os.path.exists(self.wasim_path + "core" +  call) == False:
-                try: 
-                    copy_tree(self.wasim_path, self.wasim_path + "core" + call)
-                    print("copy succesfull")
-                except :
-                    print("Error: some error has occured during copy process")          
-                    
-            # change the working directory to the copied model folder for execution
-            os.chdir(self.wasim_path + "core" + call)
-        
+            run_path = self.wasim_path + "core" + call
+
         else:
-            # change working directory to the original model folder for execution
-            os.chdir(self.wasim_path)
+            run_path = self.wasim_path +"_seq"
+
+        # Generate a new folder with all underlying files
+        # to prevent reading/writing interference if it doesn't exist already
+        if os.path.exists(run_path) == True:
+            remove_tree(run_path)
+            print("old run removed")
+
+        if os.path.exists(run_path) == False:
+            try:
+                copy_tree(self.wasim_path, run_path)
+                print("copy run folder successful")
+            except:
+                print("Error: some error has occured during copy process")
+                    
+        # change the working directory to the copied model folder for execution
+        os.chdir(run_path)
 
         # Open WASIM control file
         ctrl = fun.open_wasim_ctrl(self.ctrl_name)
+            
+        # modify seperator to match os
+        ctrl = fun.change_wasim_parameter("sep", self.seperator, ctrl)
 
         # Change WaSiM Parameters
         for par_name, par_value in zip(self.parnames, parset):
@@ -124,15 +149,18 @@ class spot_setup(object):
         # Write Parameter Values into control file
         fun.write_wasim_ctrl(self.ctrl_name, ctrl)
 
-        # WaSiM run command
-        run_command =[ "./" + self.exe ,  "./" + self.ctrl_name, " -diaglevel=INFO"]
+        # initialize the soil storage parameters in .fsz file for seamless parameter adaption
+        fun.initilize_soilstorage(self, ctrl)
 
-        print("run follows")
+        # run the model
+        try:
+            print("run WaSiM")
+            fun.run_model("wasim", self.ctrl_name, self.sys)
+        except Exception:
+            print("wasim took longer than expected - timeout")
 
-        process = subprocess.run(run_command, stdout = subprocess.DEVNULL)
 
-        print("run finished")
-
+        # TODO chose which simulation results shall be used for calibration/analysis
         # load the simulation results of the routing routine
         simulation = fun.read_wasim_results("routing"+os.sep+"qgko.stat", self.sb_eval)
 
@@ -155,11 +183,13 @@ class spot_setup(object):
     """
     def evaluation(self):
 
-        return self.obs
+        evaluation = self.obs[self.obs['time'].isin(self.calibration_range)]
+        return evaluation
     
     """
     SPOTPY function to calculate objective functions or evaluation criteria
     I: simulation [np.array] and evaluation data [pd.df]
+    O: objective function value as single value or list []
     """    
     def objectivefunction(self, simulation, evaluation):
         
@@ -171,11 +201,12 @@ class spot_setup(object):
                             "sim" : simulation})
         
         # merge observation data and simulation data by valid observation time
-        # stepts to have same length of time series
+        # steps to have same length of time series
         data = evaluation.merge(sim, how= "left")
         
         # calculate SPOTPY objective function whcih requires numpy arrays
         # therefore extraction from pandas df
+        # TODO select objective function you want to use
         kge = spotpy.objectivefunctions.kge(data[self.gauge].values.flatten(),
                                             data["sim"].values.flatten())
 
