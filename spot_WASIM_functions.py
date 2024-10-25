@@ -250,6 +250,6 @@ def initilize_soilstorage(self, ctrl):
         # run the model
         try:
             print("initialization run")
-            run_model("wasim", self.ctrl_name + "ini", self.sys, max_time = 60)
+            run_model("wasim", self.ctrl_name + "ini", self.sys, max_time = 300)
         except Exception:
             print("wasim took longer than expected during initilization run - timeout")
