@@ -1,0 +1,92 @@
+# control file for topographic analysis
+# lines starting with # are comments
+# an asterixs '*' instead of a file name or at the beginning of a line means that the file will not be calculated
+# files that are created by Tanalys internally (e.g. slope) will be used for later calculation of dependent entities
+# only if if not found, they are looked for on the hard disk
+
+#--------------------------------------
+# Parameters for the wind redistribution of snow
+#--------------------------------------
+$set $D_max = 1.2 
+$set $c_min = 0.3
+$set $h_offs = 528 
+#--------------------------------------
+
+$set $sep = / 
+$set $Path                =  .//$sep
+$set $Grid                = fundus_25
+$set $Threshold           = 200         # threshold depends on resolution and size of the features you would like to see
+$set $Manning             = 20
+$set $specificRunoff      = 200
+
+$set $DEM                 = $Path//$Grid//.dhk
+$set $outGRD			  = $Path//$Grid
+
+[Hoehenmodell]		
+1                       # switch 0=do not read in, 1= read in (strongly recommended here to read the DEM in)
+$DEM                    # path to the DEM file
+
+[Aspect]				# exposition
+1                       # switch 0=do not calculate, 1=calculate this section
+$outGRD//.exp      		# result grid Aspect
+
+[Gefaelle]				# slope
+1                       # switch 0=do not calculate, 1=calculate this section
+$outGRD//.slp      		# result grid slope
+
+[Horizont]				#sky view factor
+0                       # switch 0=do not calculate, 1=calculate this section
+$outGRD//.hor     		# result grid sky view factor
+12                      # number of sectors of the full circle to caculate average sky visibility
+
+[WindCorrectionFactor]  # used for snow correction in snow model of WaSiM
+1						# 0=do not process this section, 1=process this section
+$outGRD//_svfdir.grd   		# result grid: sky view factor for a limited sector of a circle (directed svf). Attention: the real wind redistribution factor is a grid with the same name but suffix _2 for the extension.
+10						# number of sectors to subdivide the limited sector for integrating the sky view factor 
+110						# start azimuth (0=North, 90=East, 180=South etc.)
+180						# end azimuth for the directed svf
+$D_max					# maximum deposition index: 2 means that for an evenly distributed terrain the deposition index will vary between 0 and 2 with an average of 1, so no effective increase of snow fall will be present. values larger than 2 result in an effective snow fall increase, value less than 2 (but greater than 0) in a decrease
+$h_offs					# elevation offset: the larger this number, the more additional snow will even the low elevation cells get since they are handled as if they were higher (by this offset)
+$c_min					# Minimum remaining snow (shifts the correction factor globally)
+
+[SnowRedistribution]	# snow redistribution input grids
+1
+$outGRD//.sd1	# result grid: weighed fraction for flow direction 1 (North)
+$outGRD//.sd2	# result grid: weighed fraction for flow direction 2 (West)
+$outGRD//.sd3	# result grid: weighed fraction for flow direction 3 (East)
+$outGRD//.sd4	# result grid: weighed fraction for flow direction 4 (South)
+$outGRD//.eoc	# result grid: elevation order (colums)
+$outGRD//.eor	# result grid: elevation order (rows)
+
+[Profilcurvature]	
+0                       # switch 0=do not calculate, 1=calculate this section
+
+[Plancurvature]
+0                       # switch 0=do not calculate, 1=calculate this section
+
+[Curvature]
+0                       # switch 0=do not calculate, 1=calculate this section
+
+[Flowdirection]		
+0                        # switch 0=do not calculate, 1=calculate this section with 8 flow directions (1=NE, 2=E, 4=SE, 8=S, 16=SW, 32=W, 64=NW, 128=N); 2= use 4 directions only (usefull for new surface routing) with 2=E, 8=S, 32=W, 128=N
+
+[Flowaccumulation]
+0                        # switch 0=do not calculate, 1=calculate this section
+
+[Flussnetz]		 # river network	
+0                        # switch 0=do not calculate, 1=calculate this section
+
+[Flussordnungen]	   # river orders (Strahler)
+0                          # switch 0=do not calculate, 1=calculate this section
+
+[Fliesskorrektur]
+0                        # switch 0=do not calculate, 1=calculate this section
+
+[Fliesszeiten]		# flow travel times
+0                       # switch 0=do not calculate, 1=calculate this section
+
+[Flusseparation]	# river separation (mouths for later creation of sub-basins)
+0                       # switch 0=do not calculate, 1=calculate this section
+
+[Einzugsgebiete]	# sub basins
+0                      # switch 0=do not calculate, 1=calculate this section

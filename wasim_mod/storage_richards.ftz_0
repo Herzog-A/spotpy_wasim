@@ -1,0 +1,282 @@
+[routing_model_v2]
+60.000 (timestep in minutes)
+4 (routing subbasin with tributaries 5)
+
+0 5 4 4 14 (tracer/flow index and tributary subbasin, subint, maxdelta, num-subchannels)
+0.0919634	0.0919634	0.0919634	0.0919634	
+0.0919632	0.0919632	0.0919632	0.0919632	0.0919632	0.0919632	0.0919632	0.0919632	
+0.0919631	0.0919631	0.0919631	0.0919631	0.0919631	0.0919631	0.0919631	0.0919631	
+0.0919629	0.0919629	0.0919629	0.0919629	0.0919629	0.0919629	0.0919629	0.0919629	
+0.0919627	0.0919627	0.0919627	0.0919627	0.0919627	0.0919627	0.0919627	0.0919627	
+0.0919625	0.0919625	0.0919625	0.0919625	0.0919625	0.0919625	0.0919625	0.0919625	
+0.0919623	0.0919623	0.0919623	0.0919623	0.0919623	0.0919623	0.0919623	0.0919623	
+0.0919621	0.0919621	0.0919621	0.0919621	0.0919621	0.0919621	0.0919621	0.0919621	
+0.0919619	0.0919619	0.0919619	0.0919619	0.0919619	0.0919619	0.0919619	0.0919619	
+0.0919618	0.0919618	0.0919618	0.0919618	0.0919618	0.0919618	0.0919618	0.0919618	
+0.0919616	0.0919616	0.0919616	0.0919616	0.0919616	0.0919616	0.0919616	0.0919616	
+0.0919614	0.0919614	0.0919614	0.0919614	0.0919614	0.0919614	0.0919614	0.0919614	
+0.0919612	0.0919612	0.0919612	0.0919612	0.0919612	0.0919612	0.0919612	0.0919612	
+0.091961	0.091961	0.091961	0.091961	0.091961	0.091961	0.091961	0.091961	
+8.60557e-05	1.52969e-05	0	0	8.60557e-05	1.52969e-05	0	0	
+
+0.0919636 0.0919636 0.0919636 0.0919636  (wqtab[local tributary 1].Qaus[subchannel 1][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 1])
+0.0919634 0.0919634 0.0919634 0.0919634  (wqtab[local tributary 1].Qaus[subchannel 2][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 2])
+0.0919632 0.0919632 0.0919632 0.0919632  (wqtab[local tributary 1].Qaus[subchannel 3][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 3])
+0.0919631 0.0919631 0.0919631 0.0919631  (wqtab[local tributary 1].Qaus[subchannel 4][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 4])
+0.0919629 0.0919629 0.0919629 0.0919629  (wqtab[local tributary 1].Qaus[subchannel 5][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 5])
+0.0919627 0.0919627 0.0919627 0.0919627  (wqtab[local tributary 1].Qaus[subchannel 6][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 6])
+0.0919625 0.0919625 0.0919625 0.0919625  (wqtab[local tributary 1].Qaus[subchannel 7][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 7])
+0.0919623 0.0919623 0.0919623 0.0919623  (wqtab[local tributary 1].Qaus[subchannel 8][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 8])
+0.0919621 0.0919621 0.0919621 0.0919621  (wqtab[local tributary 1].Qaus[subchannel 9][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 9])
+0.0919619 0.0919619 0.0919619 0.0919619  (wqtab[local tributary 1].Qaus[subchannel 10][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 10])
+0.0919618 0.0919618 0.0919618 0.0919618  (wqtab[local tributary 1].Qaus[subchannel 11][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 11])
+0.0919616 0.0919616 0.0919616 0.0919616  (wqtab[local tributary 1].Qaus[subchannel 12][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 12])
+0.0919614 0.0919614 0.0919614 0.0919614  (wqtab[local tributary 1].Qaus[subchannel 13][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 13])
+0.0919612 0.0919612 0.0919612 0.0919612  (wqtab[local tributary 1].Qaus[subchannel 14][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 14])
+0.091961 (riverflow_table[5].flow_mm[1])
+0.0844764 0.145254 (riverflow_table[5].flowm3s/speed
+0 (number of reservoirs)
+
+
+3 (routing subbasin with tributaries 4)
+
+0 4 4 4 13 (tracer/flow index and tributary subbasin, subint, maxdelta, num-subchannels)
+0.0873715	0.0873715	0.0873715	0.0873715	
+0.0872055	0.0872055	0.0872055	0.0872055	0.0872055	0.0872055	0.0872055	0.0872055	
+0.0870298	0.0870298	0.0870298	0.0870298	0.0870298	0.0870298	0.0870298	0.0870298	
+0.086845	0.086845	0.086845	0.086845	0.086845	0.086845	0.086845	0.086845	
+0.0866517	0.0866517	0.0866517	0.0866517	0.0866517	0.0866517	0.0866517	0.0866517	
+0.0864502	0.0864502	0.0864502	0.0864502	0.0864502	0.0864502	0.0864502	0.0864502	
+0.0862406	0.0862406	0.0862406	0.0862406	0.0862406	0.0862406	0.0862406	0.0862406	
+0.0860229	0.0860229	0.0860229	0.0860229	0.0860229	0.0860229	0.0860229	0.0860229	
+0.085797	0.085797	0.085797	0.085797	0.085797	0.085797	0.085797	0.085797	
+0.0855627	0.0855627	0.0855627	0.0855627	0.0855627	0.0855627	0.0855627	0.0855627	
+0.0853204	0.0853204	0.0853204	0.0853204	0.0853204	0.0853204	0.0853204	0.0853204	
+0.0850714	0.0850714	0.0850714	0.0850714	0.0850714	0.0850714	0.0850714	0.0850714	
+0.0848181	0.0848181	0.0848181	0.0848181	0.0848181	0.0848181	0.0848181	0.0848181	
+0.000108535	1.72146e-05	0	0	0.000108535	1.72146e-05	0	0	
+
+0.0875273 0.0875273 0.0875273 0.0875273  (wqtab[local tributary 1].Qaus[subchannel 1][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 1])
+0.0873715 0.0873715 0.0873715 0.0873715  (wqtab[local tributary 1].Qaus[subchannel 2][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 2])
+0.0872055 0.0872055 0.0872055 0.0872055  (wqtab[local tributary 1].Qaus[subchannel 3][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 3])
+0.0870298 0.0870298 0.0870298 0.0870298  (wqtab[local tributary 1].Qaus[subchannel 4][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 4])
+0.086845 0.086845 0.086845 0.086845  (wqtab[local tributary 1].Qaus[subchannel 5][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 5])
+0.0866517 0.0866517 0.0866517 0.0866517  (wqtab[local tributary 1].Qaus[subchannel 6][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 6])
+0.0864502 0.0864502 0.0864502 0.0864502  (wqtab[local tributary 1].Qaus[subchannel 7][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 7])
+0.0862406 0.0862406 0.0862406 0.0862406  (wqtab[local tributary 1].Qaus[subchannel 8][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 8])
+0.0860229 0.0860229 0.0860229 0.0860229  (wqtab[local tributary 1].Qaus[subchannel 9][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 9])
+0.085797 0.085797 0.085797 0.085797  (wqtab[local tributary 1].Qaus[subchannel 10][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 10])
+0.0855627 0.0855627 0.0855627 0.0855627  (wqtab[local tributary 1].Qaus[subchannel 11][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 11])
+0.0853204 0.0853204 0.0853204 0.0853204  (wqtab[local tributary 1].Qaus[subchannel 12][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 12])
+0.0850714 0.0850714 0.0850714 0.0850714  (wqtab[local tributary 1].Qaus[subchannel 13][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 13])
+0.0848181 (riverflow_table[4].flow_mm[1])
+0.159034 0.329036 (riverflow_table[4].flowm3s/speed
+0 (number of reservoirs)
+
+
+2 (routing subbasin with tributaries 3)
+
+0 3 4 4 22 (tracer/flow index and tributary subbasin, subint, maxdelta, num-subchannels)
+0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	0.0807414	
+0.000109776	2.03158e-05	0	0	0.000109776	2.03158e-05	0	0	
+
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 1][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 1])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 2][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 2])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 3][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 3])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 4][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 4])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 5][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 5])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 6][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 6])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 7][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 7])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 8][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 8])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 9][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 9])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 10][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 10])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 11][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 11])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 12][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 12])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 13][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 13])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 14][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 14])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 15][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 15])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 16][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 16])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 17][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 17])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 18][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 18])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 19][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 19])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 20][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 20])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 21][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 21])
+0.0807414 0.0807414 0.0807414 0.0807414  (wqtab[local tributary 1].Qaus[subchannel 22][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 22])
+0.0807414 (riverflow_table[3].flow_mm[1])
+0.191985 0.417919 (riverflow_table[3].flowm3s/speed
+0 (number of reservoirs)
+
+
+1 (routing subbasin with tributaries 2)
+
+0 2 4 4 7 (tracer/flow index and tributary subbasin, subint, maxdelta, num-subchannels)
+0.0685474	0.0685474	0.0685474	0.0685474	
+0.0685316	0.0685316	0.0685316	0.0685316	0.0685316	0.0685316	0.0685316	0.0685316	
+0.0685156	0.0685156	0.0685156	0.0685156	0.0685156	0.0685156	0.0685156	0.0685156	
+0.0684995	0.0684995	0.0684995	0.0684995	0.0684995	0.0684995	0.0684995	0.0684995	
+0.0684833	0.0684833	0.0684833	0.0684833	0.0684833	0.0684833	0.0684833	0.0684833	
+0.0684669	0.0684669	0.0684669	0.0684669	0.0684669	0.0684669	0.0684669	0.0684669	
+0.0684504	0.0684504	0.0684504	0.0684504	0.0684504	0.0684504	0.0684504	0.0684504	
+0.000106364	1.89648e-05	0	0	0.000106364	1.89648e-05	0	0	
+
+0.0685631 0.0685631 0.0685631 0.0685631  (wqtab[local tributary 1].Qaus[subchannel 1][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 1])
+0.0685474 0.0685474 0.0685474 0.0685474  (wqtab[local tributary 1].Qaus[subchannel 2][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 2])
+0.0685316 0.0685316 0.0685316 0.0685316  (wqtab[local tributary 1].Qaus[subchannel 3][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 3])
+0.0685156 0.0685156 0.0685156 0.0685156  (wqtab[local tributary 1].Qaus[subchannel 4][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 4])
+0.0684995 0.0684995 0.0684995 0.0684995  (wqtab[local tributary 1].Qaus[subchannel 5][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 5])
+0.0684833 0.0684833 0.0684833 0.0684833  (wqtab[local tributary 1].Qaus[subchannel 6][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 6])
+0.0684669 0.0684669 0.0684669 0.0684669  (wqtab[local tributary 1].Qaus[subchannel 7][1..4])
+0 (wqtab[local tributary 1].qvzuq[subchannel 7])
+0.0684504 (riverflow_table[2].flow_mm[1])
+0.245071 0.49828 (riverflow_table[2].flowm3s/speed
+0 (number of reservoirs)
+
+
+
+[unsatzon_model_v2]
+6 (number of subasins)
+60.000 (timestep in minutes)
+1	2	3	4	5	6	(code)
+4130.4 4130.4 4130.4 4130.4 4130.4 4130.4 (kelsqd in min)
+37027.2 37027.2 37027.2 37027.2 37027.2 37027.2 (kelsqi in min)
+30.116 30.116 30.116 30.116 30.116 30.116 (drainage density)
+0.0235516 0.0235516 0.0235516 0.0235516 0.0235516 0.0235516 (inverse recession constant for baseflow [needed when using no groundwater model])
+12.63 12.63 12.63 12.63 12.63 12.63 (max. baseflow [needed when using no groundwater model])
+0.3 0.3 0.3 0.3 0.3 0.3 (surface runoff fraction of snowmelt)
+0 (number of tracers)
+0 (0=runoff, 1...9 = tracers)
+1 1 (zone 1 and maxzeit)
+1983 0 1 1 1983 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+1983 1.03546 1 1 1983 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.000379395 (QDd[0][1])
+0.0492117 (QIi[0][1])
+2 2 (zone 2 and maxzeit)
+6847 0 1 0.999562 6847 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+6847 10.3491 1 0.999562 6847 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+3 0 2 0.000438148 3 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+3 0 2 0.000438148 3 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.00707464 (QDd[0][2])
+0.0383734 (QIi[0][2])
+3 2 (zone 3 and maxzeit)
+2870 0 1 0.997561 2870 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+2870 3.85332e-08 1 0.997561 2870 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+7 0 2 0.00243902 7 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+7 4.19085e-16 2 0.00243902 7 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.00539664 (QDd[0][3])
+0.051833 (QIi[0][3])
+4 2 (zone 4 and maxzeit)
+5406 9.57814 1 0.996855 5406 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+5406 4.73887 1 0.996855 5406 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+17 0 2 0.00314465 17 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+17 1.62403e-10 2 0.00314465 17 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.0195219 (QDd[0][4])
+0.0523175 (QIi[0][4])
+5 1 (zone 5 and maxzeit)
+4538 1.46058 1 1 4538 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+4538 2.83149 1 1 4538 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.0202707 (QDd[0][5])
+0.0716903 (QIi[0][5])
+6 1 (zone 6 and maxzeit)
+929 0 1 1 929 (zoneFZT_QD.n/.sx/.zonenwert/.rel/.RelCellSum)
+929 0 1 1 929 (zoneFZT_QI.n/.sx/.zonenwert/.rel/.RelCellSum)
+0.0330262 (QDd[0][6])
+4.96236e-17 (QIi[0][6])
+
+[snow_model_v2]
+6 (number of subasins)
+60.000 (timestep in minutes)
+1	0.700000(TG code and Qice_slr value)
+1	0.400000(TG code and Qfirn_slr value)
+1	0.400000(TG code and Qsnow_slr value)
+2	0.000000(TG code and Qice_slr value)
+2	0.000000(TG code and Qfirn_slr value)
+2	0.000000(TG code and Qsnow_slr value)
+3	0.000000(TG code and Qice_slr value)
+3	0.000000(TG code and Qfirn_slr value)
+3	0.000000(TG code and Qsnow_slr value)
+4	0.146086(TG code and Qice_slr value)
+4	0.000000(TG code and Qfirn_slr value)
+4	0.000000(TG code and Qsnow_slr value)
+5	0.000000(TG code and Qice_slr value)
+5	0.000000(TG code and Qfirn_slr value)
+5	0.000000(TG code and Qsnow_slr value)
+6	0.000000(TG code and Qice_slr value)
+6	0.000000(TG code and Qfirn_slr value)
+6	0.000000(TG code and Qsnow_slr value)
+
