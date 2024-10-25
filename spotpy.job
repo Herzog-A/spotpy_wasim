@@ -1,28 +1,32 @@
 #!/bin/bash
-#SBATCH --job-name=spotpy_WaSiM
+#SBATCH --job-name=wasim_job
 #SBATCH --partition=all              # on the partition "all"
 #SBATCH --constraint="amd"
-#SBATCH --ntasks=11                  # with a single task (this should always be 1, apart from special cases)
-#SBATCH --cpus-per-task=6            # with that many cpu cores
-#SBATCH --mem-per-cpu=2G             # will require that amount of RAM at maximum (if the process takes more it gets killed)
-#SBATCH --time=1-24:00               # maximum runtime of the job as "d-hh:mm"
-#SBATCH --chdir=/work/herzog5/w_d # working directory of the job
+#SBATCH --nodes=1                   # the job runs more stable if you don't allow cross node computations
+#SBATCH --ntasks=6                  # set this to the number of your runs you want to run in parallel +1 for the "Spotpy-master"
+#SBATCH --cpus-per-task=6           # the number of cpu cores that you want to assign to each seperate run (sum cores in use = ntasks*cpu_per_task)
+#SBATCH --mem-per-cpu=2G            # will require that amount of RAM at maximum (if the process takes more it gets killed)
+#SBATCH --time=0-01:00              # maximum runtime of the job as "d-hh:mm"
+#SBATCH --chdir=/work/herzog5/spotpy_wasim # working directory of the job
 #SBATCH --mail-type=NONE             # always get mail notifications 
 #SBATCH --output=slurm-%j.out        # standard out of the job into this file (also stderr)
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
 module purge
 
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export MODULEPATH=/srv/software/eb24/modules/all:$MODULEPATH
+
+# load the conda/python module
 module load lang/Anaconda3/2021.05
+# load the openMPI module
 module load mpi/OpenMPI/3.1.1-gcccuda-2018b
 
-#activate conda envrionment
+#activate conda envrionment (has to be created first)
 source activate fast-mpi4py
 
 #load netCDF library
-module load data/netCDF/4.6.1-fosscuda-2018b
+module load data/netCDF/4.9.2-gompi-2023b
 
+# run the task
 srun python spot_WASIM_run.py
-
 
