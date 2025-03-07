@@ -1,6 +1,6 @@
 # SPOTPY+ WaSiM
 
-This Git directory has been developed as part of the publication 'Alpine Model Dynamics: How Elevation InfluencesParameter Sensitivities and Process Behavior on Diurnal and Seasonal Scales' (publishing in WRR 2025). 
+This Git directory has been developed as part of the publication 'Linking Parameter Sensitivities and Hydrological Process Behavior in Complex Alpine Terrain' (publishing in progress). 
 It features the integration of WaSiM-ETH (Schulla 2021) into the SPOTPY Framework (Houska 2015). 
 
 # Integrating WaSiM-ETH into the SPOTPY framework 
@@ -89,3 +89,15 @@ The Land cover classes have been derived from Sentinel2 Data of the the European
 ### Spotpy 
 SPOTPY is an open source python package available at https://github.com/thouska/spotpy used in the v1.6.2 version in this coupeling. 
 (To use the eFAST algorithm used in the according Paper, SPOTPY must be used in v1.6.6).
+
+# References
+Schulla, J. (2021). Model description wasim: Water balance simulation model: Version 10.06.00. Zürich. Retrieved 24.05.2024, from http://www.wasim.ch/en/1004
+products/wasim description.htm1005
+
+Schulla, J., Jasper, K., Foerster, K., & Kopp, M. (2024). Wasim [Software]. Retrieved from http://www.wasim.ch/en/products/wasim_richards.htm
+
+Houska, T. (2015b). Spotpy documentation [Computer software manual]. Retrieved from https://spotpy.readthedocs.io/en/latest/888
+
+Houska, T. (2025). Spotpy [Software]. Retrieved from https://github.com/thouska/spotpy doi: 10.1371/journal.pone.0145180890
+
+Houska, T., Kraft, P., Chamorro-Chavez, A., & Breuer, L. (2015a). Spotting model parameters using a ready-made python package. PloS one, 10 (12), e0145180. doi: 10.1371/journal.pone.0145180
