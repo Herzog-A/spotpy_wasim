@@ -4,8 +4,8 @@ $set $sep = /
 # == all manual changes in this section will be overwritten by the module adapter ==
 
 $set $runID = 001
-$set $startyear  = 2018
-$set $endyear    = 2019
+$set $startyear  = 2022
+$set $endyear    = 2023
 
 $set $DefaultOutputDirectory 	= .//$sep//output//$sep
 $set $inpath_grid    			= .//$sep//input//$sep//grids//$sep//GRD//$sep
@@ -16,7 +16,7 @@ $set $output                    = .//$sep//output//$sep
 
 $set $time           = 60
 
-$set $year           = 2018
+$set $year           = 2022
 
 $set $startminute	= 00
 $set $starthour		= 01

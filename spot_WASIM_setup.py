@@ -54,18 +54,18 @@ class spot_setup(object):
         self.time_range = fun.model_time(self.mod_dict + os.sep + self.ctrl_name, tstep)
 
         # TODO definition of calibration periods
-        self.calibration_range =pd.date_range(start = dt.strptime("2018/02/01 00:00", '%Y/%m/%d %H:%M'),
-                                              end = dt.strptime("2018/12/31 23:00", '%Y/%m/%d %H:%M'),
+        self.calibration_range =pd.date_range(start = dt.strptime("2022/05/01 00:00", '%Y/%m/%d %H:%M'),
+                                              end = dt.strptime("2022/09/30 23:00", '%Y/%m/%d %H:%M'),
                                               freq = tstep,
                                               tz= None)
 
         # Reading Observation data for specified gauges
         # TODO: define the gauges used for evaluation (objective function calculation)
         #       and the corresponding sub basins
-        self.gauge_file = "input" + os.sep + "hydro" + os.sep + "fundus-qh_all.txt"
-        self.gauge = "Fundus 1989"
+        self.gauge_file = "input" + os.sep + "hydro" + os.sep + "fundus-qh_logger.txt"
+        self.gauge = "Fundus C"
         # TODO definition of subbasin identifier for evaluation
-        self.sb_eval = "2"                          
+        self.sb_eval = "5"                          
 
         # generate pandas data frame with valid observation data and time steps at
         # specified gauge
