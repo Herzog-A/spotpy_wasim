@@ -1,4 +1,5 @@
-# SPOTPY+ WaSiM
+# SPOTPY+ WaSiM 
+[![DOI](https://zenodo.org/badge/728705155.svg)](https://doi.org/10.5281/zenodo.14987399)
 
 This Git directory has been developed as part of the publication 'Linking Parameter Sensitivities and Hydrological Process Behavior in Complex Alpine Terrain' (publishing in progress). 
 It features the integration of WaSiM-ETH (Schulla 2021) into the SPOTPY Framework (Houska 2015). 
